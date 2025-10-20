@@ -1,5 +1,6 @@
 package com.ducnh.syncfilekafka.config.database;
 
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
