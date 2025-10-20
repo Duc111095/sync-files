@@ -38,7 +38,7 @@ public class KafkaConfig {
 		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 		return props;
 	}
-	
+		
 	@Bean
 	public Listener listener() {
 		return new Listener();
