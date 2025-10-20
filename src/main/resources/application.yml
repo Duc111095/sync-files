@@ -1,0 +1,106 @@
+spring:
+    application:
+        name: syncfilekafka
+
+logging:
+    level:
+        org:
+            springframework:
+                context: DEBUG
+            hibernate:
+                SQL: DEBUG
+                type:
+                    descriptor:
+                        sql:
+                            BasicBinder: TRACE		    
+
+ds:
+    ma:
+        name: MADataSource
+        jdbcUrl: jdbc:sqlserver://192.168.100.53\sql2014;database=MinhAn_App;encrypt=True;trustServerCertificate=True;
+        username: ${MICROSOFT_DB_USERNAME}
+        password: ${MICROSOFT_DB_PASSWORD}
+        driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+        dialect: org.hibernate.dialect.SQLServer2012Dialect
+    maTest:
+        name: MATestDataSource
+        jdbcUrl: jdbc:sqlserver://192.168.100.53\sql2014;database=MinhAn_Test_App;encrypt=True;trustServerCertificate=True;
+        username: ${MICROSOFT_DB_USERNAME}
+        password: ${MICROSOFT_DB_PASSWORD}
+        driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+        dialect: org.hibernate.dialect.SQLServer2012Dialect
+    na:
+        name: NADataSource
+        jdbcUrl: jdbc:sqlserver://192.168.60.17\sql2014;database=NhatAnh_App;encrypt=True;trustServerCertificate=True;
+        username: ${MICROSOFT_DB_USERNAME}
+        password: ${MICROSOFT_DB_PASSWORD}
+        driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+        dialect: org.hibernate.dialect.SQLServer2012Dialect
+    np:
+        name: NPDataSource
+        jdbcUrl: jdbc:sqlserver://192.168.5.11\sql2014;database=NamPhuong_App;encrypt=True;trustServerCertificate=True;
+        username: ${MICROSOFT_DB_USERNAME}
+        password: ${MICROSOFT_DB_PASSWORD}
+        driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+        dialect: org.hibernate.dialect.SQLServer2012Dialect        
+    sk:
+        name: SKDataSource
+        jdbcUrl: jdbc:sqlserver://10.0.20.11\sql2014;database=SKMT_App;encrypt=True;trustServerCertificate=True;
+        username: ${MICROSOFT_DB_USERNAME}
+        password: ${MICROSOFT_DB_PASSWORD}
+        driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+        dialect: org.hibernate.dialect.SQLServer2012Dialect
+    tb:
+        name: TBDataSource
+        jdbcUrl: jdbc:sqlserver://192.168.100.51\sql2014;database=MinhTam_App;encrypt=True;trustServerCertificate=True;
+        username: ${MICROSOFT_DB_USERNAME}
+        password: ${MICROSOFT_DB_PASSWORD}
+        driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+        dialect: org.hibernate.dialect.SQLServer2012Dialect
+    cnmt:
+        name: CNMTDataSource
+        jdbcUrl: jdbc:sqlserver://192.168.10.47\sql2014;database=MinhTamHCM_App;encrypt=True;trustServerCertificate=True;
+        username: ${MICROSOFT_DB_USERNAME}
+        password: ${MICROSOFT_DB_PASSWORD}
+        driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+        dialect: org.hibernate.dialect.SQLServer2012Dialect
+    ha:
+        name: HADataSource
+        jdbcUrl: jdbc:sqlserver://192.168.60.16\sql2014;database=HongAnh_App;encrypt=True;trustServerCertificate=True;
+        username: ${MICROSOFT_DB_USERNAME}
+        password: ${MICROSOFT_DB_PASSWORD}
+        driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+        dialect: org.hibernate.dialect.SQLServer2012Dialect
+    hn:
+        name: HNDataSource
+        jdbcUrl: jdbc:sqlserver://192.168.60.18\sql2014;database=HaiNam_App;encrypt=True;trustServerCertificate=True;
+        username: ${MICROSOFT_DB_USERNAME}
+        password: ${MICROSOFT_DB_PASSWORD}
+        driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+        dialect: org.hibernate.dialect.SQLServer2012Dialect
+    th:
+        name: THDataSource
+        jdbcUrl: jdbc:sqlserver://192.168.60.12\sql2014;database=ThanhHa_App;encrypt=True;trustServerCertificate=True;
+        username: ${MICROSOFT_DB_USERNAME}
+        password: ${MICROSOFT_DB_PASSWORD}
+        driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+        dialect: org.hibernate.dialect.SQLServer2012Dialect
+    ctdm:
+        name: CTDMDataSource
+        jdbcUrl: jdbc:sqlserver://10.0.10.16\sql2014;database=DuyMinhHCM_App;encrypt=True;trustServerCertificate=True;
+        username: ${MICROSOFT_DB_USERNAME}
+        password: ${MICROSOFT_DB_PASSWORD}
+        driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+        dialect: org.hibernate.dialect.SQLServer2012Dialect
+    lkdc:
+        name: LKDCDataSource
+        jdbcUrl: jdbc:sqlserver://192.168.60.15\sql2014;database=LKDC_App;encrypt=True;trustServerCertificate=True;
+        username: ${MICROSOFT_DB_USERNAME}
+        password: ${MICROSOFT_DB_PASSWORD}
+        driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+        dialect: org.hibernate.dialect.SQLServer2012Dialect
+
+app:
+    settings:
+        name: test
+        maxUsers: 10
