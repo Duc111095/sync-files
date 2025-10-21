@@ -17,13 +17,14 @@ import org.springframework.kafka.core.ProducerFactory;
 @Configuration
 public class KafkaConfig {
 	
-	@Bean
-	public ConcurrentKafkaListenerContainerFactory<Integer, String> kafkaListenerContainerFactory(ConsumerFactory<Integer, String> consumerFactory) {
-		ConcurrentKafkaListenerContainerFactory<Integer, String> concurrentKafkaListenerFactory = new ConcurrentKafkaListenerContainerFactory<>();
-		concurrentKafkaListenerFactory.setConsumerFactory(consumerFactory);
-		return concurrentKafkaListenerFactory;
-	}
+//	@Bean
+//	public ConcurrentKafkaListenerContainerFactory<Integer, String> kafkaListenerContainerFactory(ConsumerFactory<Integer, String> consumerFactory) {
+//		ConcurrentKafkaListenerContainerFactory<Integer,String> concurrentKafkaListenerFactory = new ConcurrentKafkaListenerContainerFactory<>(); 
+//		concurrentKafkaListenerFactory.setConsumerFactory(consumerFactory);
+//		return concurrentKafkaListenerFactory;
+//	}
 	
+	 	
 	@Bean
 	public ConsumerFactory<Integer, String> consumerFactory() {
 		return new DefaultKafkaConsumerFactory<>(consumerProps());
@@ -31,7 +32,7 @@ public class KafkaConfig {
 
 	private Map<String, Object> consumerProps() {
 		Map<String, Object> props = new HashMap<>();
-		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "192.168.100.52:9092");
 		props.put(ConsumerConfig.GROUP_ID_CONFIG, "listen");
 		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, Integer.class);
 		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, String.class);
@@ -39,7 +40,7 @@ public class KafkaConfig {
 		return props;
 	}
 		
-	@Bean
+	//@Bean
 	public Listener listener() {
 		return new Listener();
 	}
@@ -61,7 +62,7 @@ public class KafkaConfig {
 	
 	private Map<String, Object> producerProps() {
 		Map<String, Object> props = new HashMap<>();
-		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "192.168.100.52:9092");
 		props.put(ProducerConfig.LINGER_MS_CONFIG, 10);
 		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, Integer.class);
 		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, String.class);

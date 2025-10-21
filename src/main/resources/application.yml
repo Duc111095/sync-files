@@ -13,6 +13,8 @@ logging:
                     descriptor:
                         sql:
                             BasicBinder: TRACE		    
+MICROSOFT_DB_USERNAME: sa
+MICROSOFT_DB_PASSWORD: 123456a@@
 
 ds:
     ma:
@@ -22,6 +24,7 @@ ds:
         password: ${MICROSOFT_DB_PASSWORD}
         driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
         dialect: org.hibernate.dialect.SQLServer2012Dialect
+        maximumPoolSize: 1
     maTest:
         name: MATestDataSource
         jdbcUrl: jdbc:sqlserver://192.168.100.53\sql2014;database=MinhAn_Test_App;encrypt=True;trustServerCertificate=True;
@@ -29,6 +32,7 @@ ds:
         password: ${MICROSOFT_DB_PASSWORD}
         driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
         dialect: org.hibernate.dialect.SQLServer2012Dialect
+        maximumPoolSize: 1
     na:
         name: NADataSource
         jdbcUrl: jdbc:sqlserver://192.168.60.17\sql2014;database=NhatAnh_App;encrypt=True;trustServerCertificate=True;

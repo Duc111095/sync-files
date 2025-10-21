@@ -1,4 +1,4 @@
-package com.ducnh.syncfilekafka.config.database;
+package com.ducnh.syncfilekafka.config.database.properties;
 
 
 import lombok.Data;
