@@ -1,6 +1,6 @@
 package com.ducnh.syncfilekafka.config.database;
 
-public class DatabaseConfiguration {
+public class CommonConstantsDatabase {
 	public static final String MA_DATASOURCE = "maDataSource";
 	public static final String MA_TEST_DATASOURCE = "maTestDataSource";
 	public static final String NP_DATASOURCE = "npDataSource";
