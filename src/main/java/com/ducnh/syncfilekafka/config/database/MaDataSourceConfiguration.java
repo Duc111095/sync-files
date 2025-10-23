@@ -42,7 +42,6 @@ public class MaDataSourceConfiguration {
 		sqlSessionFactoryBean.setDataSource(maDataSource);
 		SqlSessionFactory sqlSessionFactory = sqlSessionFactoryBean.getObject();
 		sqlSessionFactory.getConfiguration().addMapper(MaMapper.class);
-		sqlSessionFactory.getConfiguration().addMapper(DefaultMapperTest.class);
 		return sqlSessionFactoryBean;
 	}
 	

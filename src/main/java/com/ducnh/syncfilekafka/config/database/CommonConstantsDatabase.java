@@ -13,6 +13,19 @@ public class CommonConstantsDatabase {
 	public static final String HA_DATASOURCE = "haDataSource";
 	public static final String LKDC_DATASOURCE = "lkdcDataSource";
 	public static final String TH_DATASOURCE = "thDataSource";
+	
+	public static final String MA = "MA";
+	public static final String MA_TEST = "MA_TEST";
+	public static final String NP = "NP";
+	public static final String NA = "NA";
+	public static final String SK = "SK";
+	public static final String TB = "TB";
+	public static final String CNMT = "CNMT";
+	public static final String CTDM = "CTDM";
+	public static final String HN = "HN";
+	public static final String HA = "HA";
+	public static final String LKDC = "LKDC";
+	public static final String TH = "TH";
 
 	public static final String MA_SESSION_FACTORY = "maSessionFactory";
 	public static final String MA_TEST_SESSION_FACTORY = "maTestSessionFactory";

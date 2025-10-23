@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import lombok.Data;
 
 @Data
-public class SysFileInfoMessage {
+public class SysFileInfo {
 	private String controller;
 	private String sysKey;
 	private int linenbr;
@@ -14,15 +14,13 @@ public class SysFileInfoMessage {
 	private Long filesize;
 	private boolean filetype;
 	private String fileenc;
+	private byte[] filedata;
 	private LocalDateTime datetime0;
 	private LocalDateTime datetime2;
 	private int userid0;
 	private int userid2;
-	private String deptSrc;
-	private String deptDest;
-	private String operation;
 	
-	public SysFileInfoMessage() {
+	public SysFileInfo() {
 		
 	}
 	
@@ -33,9 +31,6 @@ public class SysFileInfoMessage {
 		sb.append("sysKey=").append(sysKey).append(",").append("linenbr=").append(linenbr).append(",");
 		sb.append("filename=").append(filename).append(",").append("fileext=").append(fileext).append(",");
 		sb.append("fileenc=").append(fileenc).append(",");
-		sb.append("deptSrc=").append(deptSrc).append(",");
-		sb.append("deptDest=").append(deptDest).append(",");
-		sb.append("operation=").append(operation).append("]");		
 		return sb.toString();
 	}
 }
