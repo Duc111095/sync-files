@@ -7,6 +7,7 @@ import java.util.Objects;
 import org.springframework.stereotype.Service;
 
 import com.ducnh.syncfilekafka.config.database.CommonConstants;
+import com.ducnh.syncfilekafka.exception.SyncFileException;
 import com.ducnh.syncfilekafka.repositories.mappers.DefaultMapper;
 import com.ducnh.syncfilekafka.repositories.mappers.impl.CnmtMapper;
 import com.ducnh.syncfilekafka.repositories.mappers.impl.CtdmMapper;
@@ -22,10 +23,10 @@ import com.ducnh.syncfilekafka.repositories.mappers.impl.TbMapper;
 import com.ducnh.syncfilekafka.repositories.mappers.impl.ThMapper;
 
 @Service
-public class GetDataSourceMapperService {
+public class MapperService {
 	private Map<String, DefaultMapper> mapperMap;
 	
-	public GetDataSourceMapperService(CnmtMapper cnmtMapper, CtdmMapper ctdmMapper, HaMapper haMapper, HnMapper hnMapper, LkdcMapper lkdcMapper,
+	public MapperService(CnmtMapper cnmtMapper, CtdmMapper ctdmMapper, HaMapper haMapper, HnMapper hnMapper, LkdcMapper lkdcMapper,
 		MaMapper maMapper, MaTestMapper maTestMapper, NaMapper naMapper, SkMapper skMapper, NpMapper npMapper, TbMapper tbMapper, ThMapper thMapper) {
 		mapperMap = new HashMap<>();
 		mapperMap.put(CommonConstants.TH, thMapper);
@@ -45,7 +46,7 @@ public class GetDataSourceMapperService {
 	
 	public DefaultMapper getMapper(String dept) {
 		if (Objects.isNull(dept)) {
-			throw new RuntimeException("Dept is null");
+			throw new SyncFileException("Dept is null");
 		}
 		return mapperMap.get(dept);
 	}

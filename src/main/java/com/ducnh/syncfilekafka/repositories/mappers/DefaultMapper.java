@@ -1,6 +1,5 @@
 package com.ducnh.syncfilekafka.repositories.mappers;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Select;
@@ -98,8 +97,8 @@ public interface DefaultMapper {
 	List<SysFileInfoMessage> getMessagesByController(String controller);
 	
 
-	@Insert("INSERT INTO sysfileoutbox (controller, syskey, line_nbr, file_name, file_size, file_type, file_ext, file_enc, datetime0, datetime2, user_id0, user_id2, dept_src, dept_dest, operation, options)"
-    		+ "VALUES('${controller}', '${sysKey}', ${linenbr}, N'${filename}', ${filesize}, '${filetype}', '${fileext}', '${fileenc}', '${datetime0}', '${datetime2}', ${userid0}, ${userid2}, '${deptSrc}', '${deptDest}', '${operation}', '${options}')")
+	@Insert("insert into sysfileoutbox (controller, syskey, line_nbr, file_name, file_size, file_type, file_ext, file_enc, datetime0, datetime2, user_id0, user_id2, dept_src, dept_dest, operation, options)"
+    		+ "values('${controller}', '${sysKey}', ${linenbr}, N'${filename}', ${filesize}, '${filetype}', '${fileext}', '${fileenc}', '${datetime0}', '${datetime2}', ${userid0}, ${userid2}, '${deptSrc}', '${deptDest}', '${operation}', '${options}')")
     void insertMessage(SysFileInfoMessage sysFileOutbox);
 	 
 	@Select("select 1 from sysfileoutbox where controller='#{controller}' and sysKey='#{sysKey}' and line_nbr = #{linenbr}")
@@ -148,8 +147,8 @@ public interface DefaultMapper {
 	@Select("select * from sysfileinfo where controller='${controller}' and sysKey='${sysKey}' and line_nbr = ${linenbr}")
 	SysFileInfo getSysFileInfoByMessage(SysFileInfoMessage message);
     
-    @Insert("INSERT INTO sysfileinfo (controller, syskey, line_nbr, file_name, file_size, file_type, file_ext, file_enc, file_data, datetime0, datetime2, user_id0, user_id2)"
-    		+ "VALUES('${controller}', '${sysKey}', ${linenbr}, N'${filename}', ${filesize}, '${filetype}', '${fileext}', '${fileenc}', '${filedata}', '${datetime0}', '${datetime2}', ${userid0}, ${userid2})")
+    @Insert("insert into sysfileinfo (controller, syskey, line_nbr, file_name, file_size, file_type, file_ext, file_enc, file_data, datetime0, datetime2, user_id0, user_id2)"
+    		+ "values('${controller}', '${sysKey}', ${linenbr}, N'${filename}', ${filesize}, '${filetype}', '${fileext}', '${fileenc}', '${filedata}', '${datetime0}', '${datetime2}', ${userid0}, ${userid2})")
     void insertSysFileInfo(SysFileInfo sysFileInfo);
     
     @Select("select 1 from sysfileinfo where controller='#{controller}' and sysKey='#{sysKey}' and line_nbr = #{linenbr}")

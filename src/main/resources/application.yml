@@ -105,6 +105,18 @@ ds:
         dialect: org.hibernate.dialect.SQLServer2012Dialect
 
 app:
-    settings:
-        name: test
-        maxUsers: 10
+    config:
+        overrideOptions: '1' ## co ghi de k?
+        maPathFile: \\192.168.100.53\MinhAn\Upload\MinhAn_App
+        maTestPathFile: \\192.168.100.53\MinhAn ERP\Upload\MINHAN_Test_App
+        npPathFile: \\192.168.5.11\NamPhuong\Upload\NamPhuong_App
+        naPathFile: \\192.168.60.17\NHATANH\Upload\NhatAnh_App
+        skPathFile: \\10.0.20.11\SKMT\Upload\SKMT_App
+        tbPathFile: \\192.168.100.51\MINHTAM\Upload\MinhTam_App
+        cnmtPathFile: \\192.168.10.47\MINHTAMHCM\Upload\MINHTAMHCM_App
+        ctdmPathFile: \\10.0.10.16\DuyMinhHCM\Upload\DuyMinhHCM_App
+        thPathFile: \\192.168.60.12\ThanhHa\Upload\THANHHA_App
+        hnPathFile: \\192.168.60.18\HaiNam\Upload\HAINAM_App
+        haPathFile: \\192.168.60.16\HongAnh\Upload\HongAnh_App
+        lkdcPathFile: \\192.168.60.15\lkdc\Upload\LKDC_App
+        ignoreStatus: '1'

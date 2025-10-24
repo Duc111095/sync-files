@@ -17,12 +17,12 @@ import org.springframework.kafka.core.ProducerFactory;
 @Configuration
 public class KafkaConfig {
 	
-//	@Bean
-//	public ConcurrentKafkaListenerContainerFactory<Integer, String> kafkaListenerContainerFactory(ConsumerFactory<Integer, String> consumerFactory) {
-//		ConcurrentKafkaListenerContainerFactory<Integer,String> concurrentKafkaListenerFactory = new ConcurrentKafkaListenerContainerFactory<>(); 
-//		concurrentKafkaListenerFactory.setConsumerFactory(consumerFactory);
-//		return concurrentKafkaListenerFactory;
-//	}
+	@Bean
+	public ConcurrentKafkaListenerContainerFactory<Integer, String> kafkaListenerContainerFactory(ConsumerFactory<Integer, String> consumerFactory) {
+		ConcurrentKafkaListenerContainerFactory<Integer,String> concurrentKafkaListenerFactory = new ConcurrentKafkaListenerContainerFactory<>(); 
+		concurrentKafkaListenerFactory.setConsumerFactory(consumerFactory);
+		return concurrentKafkaListenerFactory;
+	}
 	
 	 	
 	@Bean
@@ -40,7 +40,7 @@ public class KafkaConfig {
 		return props;
 	}
 		
-	//@Bean
+	@Bean
 	public Listener listener() {
 		return new Listener();
 	}

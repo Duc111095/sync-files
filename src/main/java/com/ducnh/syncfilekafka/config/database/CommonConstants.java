@@ -2,6 +2,19 @@ package com.ducnh.syncfilekafka.config.database;
 
 import java.util.List;
 
+import com.ducnh.syncfilekafka.repositories.mappers.impl.CnmtMapper;
+import com.ducnh.syncfilekafka.repositories.mappers.impl.CtdmMapper;
+import com.ducnh.syncfilekafka.repositories.mappers.impl.HaMapper;
+import com.ducnh.syncfilekafka.repositories.mappers.impl.HnMapper;
+import com.ducnh.syncfilekafka.repositories.mappers.impl.LkdcMapper;
+import com.ducnh.syncfilekafka.repositories.mappers.impl.MaMapper;
+import com.ducnh.syncfilekafka.repositories.mappers.impl.MaTestMapper;
+import com.ducnh.syncfilekafka.repositories.mappers.impl.NaMapper;
+import com.ducnh.syncfilekafka.repositories.mappers.impl.NpMapper;
+import com.ducnh.syncfilekafka.repositories.mappers.impl.SkMapper;
+import com.ducnh.syncfilekafka.repositories.mappers.impl.TbMapper;
+import com.ducnh.syncfilekafka.repositories.mappers.impl.ThMapper;
+
 public class CommonConstants {
 		
 	public static final String MA_DATASOURCE = "maDataSource";
@@ -69,8 +82,15 @@ public class CommonConstants {
 	public static final String LKDC_DATASOURCE_PREFIX = "ds.lkdc";
 	public static final String TH_DATASOURCE_PREFIX = "ds.th";
 	
-	public static List<String> LIST_DATASOURCES = List.of(MA_DATASOURCE, MA_TEST_DATASOURCE, NP_DATASOURCE, NA_DATASOURCE, SK_DATASOURCE, TB_DATASOURCE, CNMT_DATASOURCE, CTDM_DATASOURCE, HN_DATASOURCE, HA_DATASOURCE, LKDC_DATASOURCE, TH_DATASOURCE);
-	public static List<String> LIST_DEPTS = List.of(MA, MA_TEST, NP, NA, SK, TB, CNMT, CTDM, HN, HA, LKDC, TH);
-	public static List<String> LIST_MAPPERS = List.of(MA_MAPPER, MA_TEST_MAPPER, NP_MAPPER, NA_MAPPER, SK_MAPPER, TB_MAPPER, CNMT_MAPPER, CTDM_MAPPER, HN_MAPPER, HA_MAPPER, LKDC_MAPPER, TH_MAPPER);
-	public static List<String> LIST_SESSION_FACTORIES = List.of(MA_SESSION_FACTORY, MA_TEST_SESSION_FACTORY, NP_SESSION_FACTORY, NA_SESSION_FACTORY, SK_SESSION_FACTORY, CNMT_SESSION_FACTORY, TB_SESSION_FACTORY, CTDM_SESSION_FACTORY, HN_SESSION_FACTORY, HA_SESSION_FACTORY, LKDC_SESSION_FACTORY, TH_SESSION_FACTORY);
+	public static final String FILE_EXISTED = "File existed!";
+	public static final String SYSFILEINFO_NOT_FOUND = "Not exists record in source SysFileInfo: ";
+	public static final String SYSFILEINFO_EXISTED = "Sysfileinfo existed: controller: %s, syskey: %s, linenbr: %d";
+	public static final String EMPTY_STRING = "";
+	
+	public static final List<String> LIST_DATASOURCES = List.of(MA_DATASOURCE, MA_TEST_DATASOURCE, NP_DATASOURCE, NA_DATASOURCE, SK_DATASOURCE, TB_DATASOURCE, CNMT_DATASOURCE, CTDM_DATASOURCE, HN_DATASOURCE, HA_DATASOURCE, LKDC_DATASOURCE, TH_DATASOURCE);
+	public static final List<String> LIST_DEPTS = List.of(MA, MA_TEST, NP, NA, SK, TB, CNMT, CTDM, HN, HA, LKDC, TH);
+	public static final List<String> LIST_MAPPERS = List.of(MA_MAPPER, MA_TEST_MAPPER, NP_MAPPER, NA_MAPPER, SK_MAPPER, TB_MAPPER, CNMT_MAPPER, CTDM_MAPPER, HN_MAPPER, HA_MAPPER, LKDC_MAPPER, TH_MAPPER);
+	public static final List<String> LIST_SESSION_FACTORIES = List.of(MA_SESSION_FACTORY, MA_TEST_SESSION_FACTORY, NP_SESSION_FACTORY, NA_SESSION_FACTORY, SK_SESSION_FACTORY, CNMT_SESSION_FACTORY, TB_SESSION_FACTORY, CTDM_SESSION_FACTORY, HN_SESSION_FACTORY, HA_SESSION_FACTORY, LKDC_SESSION_FACTORY, TH_SESSION_FACTORY);
+	public static final List<Class<?>> LIST_MAPPER_CLASS = List.of(MaMapper.class, MaTestMapper.class, NpMapper.class, NaMapper.class, SkMapper.class, CnmtMapper.class, TbMapper.class, CtdmMapper.class, HnMapper.class, HaMapper.class, LkdcMapper.class, ThMapper.class);
+
 }
