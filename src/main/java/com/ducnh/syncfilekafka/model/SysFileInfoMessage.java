@@ -1,6 +1,6 @@
 package com.ducnh.syncfilekafka.model;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 import lombok.Data;
 
@@ -12,15 +12,21 @@ public class SysFileInfoMessage {
 	private String filename;
 	private String fileext;
 	private Long filesize;
-	private boolean filetype;
+	private byte[] filedata;
+	private String filetype;
 	private String fileenc;
-	private LocalDateTime datetime0;
-	private LocalDateTime datetime2;
+	private Timestamp datetime0;
+	private Timestamp datetime2;
 	private int userid0;
 	private int userid2;
 	private String deptSrc;
 	private String deptDest;
 	private String operation;
+	private char options; // 1 - ghi de, 0 - 0 ghi de
+	private Timestamp createDate;
+	private Timestamp updateDate;
+	private String errMsg;
+	private char status;
 	
 	public SysFileInfoMessage() {
 		
@@ -35,7 +41,11 @@ public class SysFileInfoMessage {
 		sb.append("fileenc=").append(fileenc).append(",");
 		sb.append("deptSrc=").append(deptSrc).append(",");
 		sb.append("deptDest=").append(deptDest).append(",");
-		sb.append("operation=").append(operation).append("]");		
+		sb.append("options=").append(options).append(",");
+		sb.append("createDate=").append(createDate).append(",");
+		sb.append("updateDate=").append(updateDate).append(",");
+		sb.append("errMsg=").append(errMsg).append(",");
+		sb.append("status=").append(status).append("]");		
 		return sb.toString();
 	}
 }

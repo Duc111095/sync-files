@@ -6,7 +6,7 @@ import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 
-import com.ducnh.syncfilekafka.config.database.CommonConstantsDatabase;
+import com.ducnh.syncfilekafka.config.database.CommonConstants;
 import com.ducnh.syncfilekafka.repositories.mappers.DefaultMapper;
 import com.ducnh.syncfilekafka.repositories.mappers.impl.CnmtMapper;
 import com.ducnh.syncfilekafka.repositories.mappers.impl.CtdmMapper;
@@ -28,18 +28,18 @@ public class GetDataSourceMapperService {
 	public GetDataSourceMapperService(CnmtMapper cnmtMapper, CtdmMapper ctdmMapper, HaMapper haMapper, HnMapper hnMapper, LkdcMapper lkdcMapper,
 		MaMapper maMapper, MaTestMapper maTestMapper, NaMapper naMapper, SkMapper skMapper, NpMapper npMapper, TbMapper tbMapper, ThMapper thMapper) {
 		mapperMap = new HashMap<>();
-		mapperMap.put(CommonConstantsDatabase.TH, thMapper);
-		mapperMap.put(CommonConstantsDatabase.TB, tbMapper);
-		mapperMap.put(CommonConstantsDatabase.CNMT, cnmtMapper);
-		mapperMap.put(CommonConstantsDatabase.CTDM, ctdmMapper);
-		mapperMap.put(CommonConstantsDatabase.HA, haMapper);
-		mapperMap.put(CommonConstantsDatabase.HN, hnMapper);
-		mapperMap.put(CommonConstantsDatabase.LKDC, lkdcMapper);
-		mapperMap.put(CommonConstantsDatabase.MA, maMapper);
-		mapperMap.put(CommonConstantsDatabase.MA_TEST, maTestMapper);
-		mapperMap.put(CommonConstantsDatabase.NA, naMapper);
-		mapperMap.put(CommonConstantsDatabase.SK, skMapper);
-		mapperMap.put(CommonConstantsDatabase.NP, npMapper);
+		mapperMap.put(CommonConstants.TH, thMapper);
+		mapperMap.put(CommonConstants.TB, tbMapper);
+		mapperMap.put(CommonConstants.CNMT, cnmtMapper);
+		mapperMap.put(CommonConstants.CTDM, ctdmMapper);
+		mapperMap.put(CommonConstants.HA, haMapper);
+		mapperMap.put(CommonConstants.HN, hnMapper);
+		mapperMap.put(CommonConstants.LKDC, lkdcMapper);
+		mapperMap.put(CommonConstants.MA, maMapper);
+		mapperMap.put(CommonConstants.MA_TEST, maTestMapper);
+		mapperMap.put(CommonConstants.NA, naMapper);
+		mapperMap.put(CommonConstants.SK, skMapper);
+		mapperMap.put(CommonConstants.NP, npMapper);
 
 	}
 	
