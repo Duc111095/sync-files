@@ -14,8 +14,14 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 
+
+import lombok.RequiredArgsConstructor;
+
 @Configuration
+@RequiredArgsConstructor
 public class KafkaConfig {
+	
+	private final KafkaProps kafkaProps;
 	
 	@Bean
 	public ConcurrentKafkaListenerContainerFactory<Integer, String> kafkaListenerContainerFactory(ConsumerFactory<Integer, String> consumerFactory) {
@@ -32,11 +38,11 @@ public class KafkaConfig {
 
 	private Map<String, Object> consumerProps() {
 		Map<String, Object> props = new HashMap<>();
-		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "192.168.100.52:9092");
-		props.put(ConsumerConfig.GROUP_ID_CONFIG, "listen");
+		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProps.getBootstrapServer());
+		props.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaProps.getGroupIdConsumer());
 		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, Integer.class);
 		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, String.class);
-		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, kafkaProps.getAutoOffsetReset());
 		return props;
 	}
 		
@@ -62,8 +68,8 @@ public class KafkaConfig {
 	
 	private Map<String, Object> producerProps() {
 		Map<String, Object> props = new HashMap<>();
-		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "192.168.100.52:9092");
-		props.put(ProducerConfig.LINGER_MS_CONFIG, 10);
+		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProps.getBootstrapServer());
+		props.put(ProducerConfig.LINGER_MS_CONFIG, kafkaProps.getLingerMs());
 		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, Integer.class);
 		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, String.class);
 		return props;

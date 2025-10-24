@@ -107,6 +107,7 @@ ds:
 app:
     config:
         overrideOptions: '1' ## co ghi de k?
+        ignoreStatus: '1'
         maPathFile: \\192.168.100.53\MinhAn\Upload\MinhAn_App
         maTestPathFile: \\192.168.100.53\MinhAn ERP\Upload\MINHAN_Test_App
         npPathFile: \\192.168.5.11\NamPhuong\Upload\NamPhuong_App
@@ -119,4 +120,8 @@ app:
         hnPathFile: \\192.168.60.18\HaiNam\Upload\HAINAM_App
         haPathFile: \\192.168.60.16\HongAnh\Upload\HongAnh_App
         lkdcPathFile: \\192.168.60.15\lkdc\Upload\LKDC_App
-        ignoreStatus: '1'
+        kafka:
+          bootstrapServer: 192.168.100.52:9092
+          groupIdConsumer: listen
+          autoOffsetReset: earliest
+          lingerMs: 10
