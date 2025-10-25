@@ -125,3 +125,8 @@ app:
           groupIdConsumer: listen
           autoOffsetReset: earliest
           lingerMs: 10
+          consumerMessageTopic: ""
+          consumerMessageTopicPattern: "*.sysfileoutbox"
+          errorMessageTopic: "syncfileserror"
+          enableAutoCommit: "true"
+          autoCommitIntervalMs: "1000"

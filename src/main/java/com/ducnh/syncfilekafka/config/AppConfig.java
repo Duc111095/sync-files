@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 @ConfigurationProperties(prefix = "app.config")
 public class AppConfig {
-	private char options;
+	private char overrideOptions;
 	private char ignoreStatus;
 	private String maPathFile;
 	private String maTestPathFile;

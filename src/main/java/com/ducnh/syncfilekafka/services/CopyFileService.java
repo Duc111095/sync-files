@@ -1,4 +1,4 @@
-package com.ducnh.syncfilekafka.services;
+ package com.ducnh.syncfilekafka.services;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -35,7 +35,7 @@ public class CopyFileService {
 		serverMap.put(CommonConstants.NP, appConfig.getNpPathFile());
 		serverMap.put(CommonConstants.NA, appConfig.getNaPathFile());
 		serverMap.put(CommonConstants.SK, appConfig.getSkPathFile());
-		serverMap.put(CommonConstants. TB, appConfig.getTbPathFile());
+		serverMap.put(CommonConstants.TB, appConfig.getTbPathFile());
 		serverMap.put(CommonConstants.CNMT, appConfig.getCnmtPathFile());
 		serverMap.put(CommonConstants.CTDM, appConfig.getCtdmPathFile());
 		serverMap.put(CommonConstants.TH, appConfig.getThPathFile());
