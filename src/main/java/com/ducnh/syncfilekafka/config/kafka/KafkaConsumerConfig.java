@@ -43,7 +43,7 @@ public class KafkaConsumerConfig {
 	}
 
 	@Bean(name = "errorMessageConsumer")
-	public KafkaConsumer<String, SysFileInfoMessage> consumer() {
+	public KafkaConsumer<String, SysFileInfoMessage> sysFileInfoMessageConsumer() {
 		return new KafkaConsumer<>(consumerProps(SysFileInfoMessageDeserializer.class));
 	}
 	
