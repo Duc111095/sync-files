@@ -61,21 +61,21 @@ public class SysFileInfoMessageDeserializer implements Deserializer<SysFileInfoM
 			     JSONObject fixedBefore = new JSONObject();
 
 			     @SuppressWarnings("unchecked")
-				 Iterator<String> fieldBeforeNames = before.keys();
+				 Iterator<String> beforeFieldNames = before.keys();
 			     
-			     while (fieldBeforeNames.hasNext()) {
-			    	 String fieldBeforeName = fieldBeforeNames.next();
-			    	 ObjectWrapper o = parseObject(beforeType, after.get(fieldBeforeName), fieldBeforeName);
-			    	 fixedBefore.put(fieldBeforeName, o == null ? null : o.getValue());
+			     while (beforeFieldNames.hasNext()) {
+			    	 String beforeFieldName = beforeFieldNames.next();
+			    	 ObjectWrapper o = parseObject(beforeType, after.get(beforeFieldName), beforeFieldName);
+			    	 fixedBefore.put(beforeFieldName, o == null ? null : o.getValue());
 			     }   
 			     
 			     @SuppressWarnings("unchecked")
-				 Iterator<String> fieldNames = after.keys();
+				 Iterator<String> afterFieldNames = after.keys();
 			     
-			     while (fieldNames.hasNext()) {
-			    	 String fieldNameAfter = fieldNames.next();
-			    	 ObjectWrapper o = parseObject(afterType, after.get(fieldNameAfter), fieldNameAfter);
-			    	 fixedAfter.put(fieldNameAfter, o == null ? null : o.getValue());
+			     while (afterFieldNames.hasNext()) {
+			    	 String afterFieldName= afterFieldNames.next();
+			    	 ObjectWrapper o = parseObject(afterType, after.get(afterFieldName), afterFieldName);
+			    	 fixedAfter.put(afterFieldName, o == null ? null : o.getValue());
 			     }  
 			  
 			     beforeMessage = objectMapper.readValue(fixedBefore.toString(), SysFileInfoMessage.class);
