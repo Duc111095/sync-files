@@ -29,7 +29,6 @@ public class KafkaConsumeService {
 				final ConsumerRecords<String, SysFileInfoMessage> records = messageConsumer.poll(Duration.ofMillis(100));
 				for (final ConsumerRecord<String, SysFileInfoMessage> record : records) {
 					final String key = record.key();
-					System.out.println(key);
 					final SysFileInfoMessage sysFileInfoMessage = record.value();
 					copyFileService.copyFileAndInsertSysFileInfo(sysFileInfoMessage);
 				}

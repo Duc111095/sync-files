@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor
-public class KakfaConsumerConfig {
+public class KafkaConsumerConfig {
 	private final KafkaProps kafkaProps;
 	
 	@Bean(name = "sysfileinfoMessageListenerFactory")
