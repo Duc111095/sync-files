@@ -20,6 +20,7 @@ public class KafkaConsumeService {
 
 	private final KafkaProps kafkaProps;
 	private final KafkaConsumer<String, SysFileInfoMessage> messageConsumer;
+	private final CopyFileService copyFileService;
 	
 	public void consumeMessage() {
 		try {
@@ -28,8 +29,9 @@ public class KafkaConsumeService {
 				final ConsumerRecords<String, SysFileInfoMessage> records = messageConsumer.poll(Duration.ofMillis(100));
 				for (final ConsumerRecord<String, SysFileInfoMessage> record : records) {
 					final String key = record.key();
+					System.out.println(key);
 					final SysFileInfoMessage sysFileInfoMessage = record.value();
-					System.out.printf("Key = %s, value = %s%n", key, sysFileInfoMessage.toString());
+					copyFileService.copyFileAndInsertSysFileInfo(sysFileInfoMessage);
 				}
 			}
 		} catch (Exception ex) {

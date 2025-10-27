@@ -17,6 +17,7 @@ import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import com.ducnh.syncfilekafka.config.kafka.serializer.CustomMessageDeserializer;
+import com.ducnh.syncfilekafka.config.kafka.serializer.SysFileInfoMessageDeserializer;
 import com.ducnh.syncfilekafka.model.SysFileInfoMessage;
 
 import lombok.RequiredArgsConstructor;
@@ -43,7 +44,7 @@ public class KakfaConsumerConfig {
 
 	@Bean(name = "errorMessageConsumer")
 	public KafkaConsumer<String, SysFileInfoMessage> consumer() {
-		return new KafkaConsumer<>(consumerProps(CustomMessageDeserializer.class));
+		return new KafkaConsumer<>(consumerProps(SysFileInfoMessageDeserializer.class));
 	}
 	
 	private Map<String, Object> consumerProps(Class<?> valueDeserializerClass) {

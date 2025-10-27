@@ -59,11 +59,11 @@ public class CopyFileService {
 			boolean copied = copyFile(msgCopy.getFileenc(), srcDept, destDept, msgCopy.getOptions());
 			if (copied) {
 				// insert SysFileInfo
-				DefaultMapper srcMapper = dsMapperService.getMapper(destDept);
+				DefaultMapper srcMapper = dsMapperService.getMapper(srcDept);
 				if (srcMapper.checkExistSysFileInfoByMessage(msgCopy) != null) {
 					SysFileInfo sysFileInfo = srcMapper.getSysFileInfoByMessage(msgCopy);
-					DefaultMapper destMapper = dsMapperService.getMapper(srcDept);
-					
+					DefaultMapper destMapper = dsMapperService.getMapper(destDept);
+
 					// update message
 					if (destMapper.checkExistSysFileInfo(sysFileInfo) == null) {
 						destMapper.insertSysFileInfo(sysFileInfo);
@@ -74,7 +74,7 @@ public class CopyFileService {
 					} else {
 						msgCopy.setUpdateDate(new Timestamp(Instant.now().toEpochMilli()));
 						msgCopy.setStatus('1');
-						msgCopy.setErrMsg(CommonConstants.SYSFILEINFO_EXISTED.formatted(msgCopy.getController(), msgCopy.getSysKey(), msgCopy.getLinenbr()));
+						msgCopy.setErrMsg(CommonConstants.SYSFILEINFO_EXISTED.formatted(msgCopy.getController().trim(), msgCopy.getSysKey().trim(), msgCopy.getLinenbr()));
 						srcMapper.updateMessage(msgCopy);
 					}
 				} else {

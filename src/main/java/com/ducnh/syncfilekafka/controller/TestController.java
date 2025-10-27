@@ -6,9 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ducnh.syncfilekafka.model.SysFileInfoMessage;
-import com.ducnh.syncfilekafka.repositories.mappers.impl.MaMapper;
-import com.ducnh.syncfilekafka.services.CopyFileService;
+import com.ducnh.syncfilekafka.services.KafkaConsumeService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,17 +15,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TestController {
 
-	private final MaMapper maMapper;
-	private final CopyFileService cpFileService;
+	private final KafkaConsumeService consumer;
 	
 	@GetMapping("/test")
 	public Map<String, Object> getInfoDatabase() {
 		Map<String, Object> result = new HashMap<>();
 		try {
-			// Lay du lieu tu message
-			SysFileInfoMessage message = maMapper.getMessageById("BPCTran", "G000001072BPC", 3);
-			System.out.println(message);
-			cpFileService.copyFileAndInsertSysFileInfo(message);
+			System.out.println("SysFileMessage Kafka starting...");
+			// Lay du lieu tu kafkaTopic
+			consumer.consumeMessage();
 			//result.put("SysFile: ", sfi.getController());
 			return result;
 		} catch (Exception e){
