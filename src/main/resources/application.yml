@@ -120,13 +120,16 @@ app:
         hnPathFile: \\192.168.60.18\HaiNam\Upload\HAINAM_App
         haPathFile: \\192.168.60.16\HongAnh\Upload\HongAnh_App
         lkdcPathFile: \\192.168.60.15\lkdc\Upload\LKDC_App
+        sendErrorIds: 64
+        logDebugged: true
         kafka:
           bootstrapServer: 192.168.100.52:9092
           groupIdConsumer: listen1
           autoOffsetReset: earliest
           lingerMs: 10
           consumerMessageTopic: ""
-          consumerMessageTopicPattern: "MA-sysfileoutbox.MINHAN_App.dbo.sysfileoutbox"
+          consumerMessageTopicPattern: ".*?dbo.sysfileoutbox"
           errorMessageTopic: "syncfileserror"
           enableAutoCommit: "true"
           autoCommitIntervalMs: "1000"
+        

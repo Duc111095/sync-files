@@ -7,6 +7,5 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SyncFileKafkaApplication {
     public static void main(String[] args) {
         SpringApplication.run(SyncFileKafkaApplication.class, args);
-        
     }
 }

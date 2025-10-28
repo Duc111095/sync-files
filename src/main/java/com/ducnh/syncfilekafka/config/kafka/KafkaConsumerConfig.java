@@ -14,7 +14,6 @@ import org.springframework.kafka.config.KafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
-import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import com.ducnh.syncfilekafka.config.kafka.serializer.CustomMessageDeserializer;
 import com.ducnh.syncfilekafka.config.kafka.serializer.SysFileInfoMessageDeserializer;

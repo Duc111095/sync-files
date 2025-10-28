@@ -2,7 +2,9 @@ package com.ducnh.syncfilekafka.services;
 
 import java.time.Duration;
 import java.util.Collections;
+import java.util.regex.Pattern;
 
+import org.apache.kafka.clients.consumer.ConsumerRebalanceListener;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -24,7 +26,8 @@ public class KafkaConsumeService {
 	
 	public void consumeMessage() {
 		try {
-			messageConsumer.subscribe(Collections.singletonList(kafkaProps.getConsumerMessageTopicPattern()));
+			Pattern pattern = Pattern.compile(kafkaProps.getConsumerMessageTopicPattern());
+			messageConsumer.subscribe(pattern);
 			while (true) {
 				final ConsumerRecords<String, SysFileInfoMessage> records = messageConsumer.poll(Duration.ofMillis(100));
 				for (final ConsumerRecord<String, SysFileInfoMessage> record : records) {

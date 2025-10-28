@@ -23,4 +23,15 @@ public class AppConfig {
 	private String hnPathFile;
 	private String haPathFile;
 	private String lkdcPathFile;
+	private String sendErrorIds;
+	private boolean logDebugged;
+	
+	public long[] getSendErrorIdsArray() {
+		String[] strArr = sendErrorIds.split(",");
+		long[] result = new long[strArr.length];
+		for (int i = 0; i < strArr.length; i++) {
+			result[i] = Long.valueOf(strArr[i]);
+		}
+		return result;
+	}
 }

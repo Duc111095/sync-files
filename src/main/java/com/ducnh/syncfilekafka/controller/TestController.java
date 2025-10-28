@@ -3,10 +3,11 @@ package com.ducnh.syncfilekafka.controller;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ducnh.syncfilekafka.services.KafkaConsumeService;
+import com.ducnh.syncfilekafka.services.ZulipService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,15 +16,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TestController {
 
-	private final KafkaConsumeService consumer;
+	private final ZulipService zullip;
 	
-	@GetMapping("/test")
-	public Map<String, Object> getInfoDatabase() {
+	@GetMapping("/test/{message}")
+	public Map<String, Object> getInfoDatabase(@PathVariable("message") String message) {
 		Map<String, Object> result = new HashMap<>();
 		try {
-			System.out.println("SysFileMessage Kafka starting...");
+			System.out.println("Message: " + message);
 			// Lay du lieu tu kafkaTopic
-			consumer.consumeMessage();
+			zullip.sendDirectMessage(message, 64L);
 			//result.put("SysFile: ", sfi.getController());
 			return result;
 		} catch (Exception e){

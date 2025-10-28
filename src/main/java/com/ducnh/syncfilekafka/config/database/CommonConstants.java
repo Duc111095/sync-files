@@ -82,9 +82,14 @@ public class CommonConstants {
 	public static final String LKDC_DATASOURCE_PREFIX = "ds.lkdc";
 	public static final String TH_DATASOURCE_PREFIX = "ds.th";
 	
-	public static final String FILE_EXISTED = "File existed!";
-	public static final String SYSFILEINFO_NOT_FOUND = "Not exists record in source SysFileInfo: ";
-	public static final String SYSFILEINFO_EXISTED = "Sysfileinfo existed: controller: %s, syskey: %s, linenbr: %d";
+	public static final String SYNC_SUCCESSFULLY = "Sync successfully - Sysfileinfo: %s";
+	public static final String DELETE_SUCCESSFULLY = "Delete successfully - Sysfileinfo: %s";
+	public static final String ERROR_DELETE = "Error: Delete - Sysfileinfo: %s";
+	public static final String FILE_EXISTED = "Error: File existed - Sysfileinfo: %s";
+	public static final String SYSFILEINFO_NOT_FOUND = "Error: Not exist record in source - SysFileInfo: %s";
+	public static final String FILE_NOT_FOUND = "Error: Not exist file - SysFileInfo: %s";
+	
+	public static final String SYSFILEINFO_EXISTED = "Error: Sysfileinfo existed: %s";
 	public static final String EMPTY_STRING = "";
 	
 	public static final List<String> LIST_DATASOURCES = List.of(MA_DATASOURCE, MA_TEST_DATASOURCE, NP_DATASOURCE, NA_DATASOURCE, SK_DATASOURCE, TB_DATASOURCE, CNMT_DATASOURCE, CTDM_DATASOURCE, HN_DATASOURCE, HA_DATASOURCE, LKDC_DATASOURCE, TH_DATASOURCE);

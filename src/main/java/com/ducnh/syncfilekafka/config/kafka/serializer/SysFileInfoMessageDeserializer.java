@@ -39,52 +39,53 @@ public class SysFileInfoMessageDeserializer implements Deserializer<SysFileInfoM
 			SysFileInfoMessage beforeMessage = new SysFileInfoMessage();
 			SysFileInfoMessage afterMessage = new SysFileInfoMessage();
 			try {
-			     JSONObject rawMsg = new JSONObject(new String(data, "utf-8"));
-			     JSONArray fields = rawMsg.getJSONObject("schema").getJSONArray("fields");
-			     JSONArray beforeFields = null;
-			     JSONArray afterFields = null;
-			     for (int i  = 0; i < fields.length(); i++) {
-			    	 if (fields.getJSONObject(i).getString("field").equals("before")) {
-			    		 beforeFields = fields.getJSONObject(i).getJSONArray("fields");
-			    	 } else if (fields.getJSONObject(i).getString("field").equals("after")) {
-			    		 afterFields = fields.getJSONObject(i).getJSONArray("fields");
-			    	 }
-			     }
+			    JSONObject rawMsg = new JSONObject(new String(data, "utf-8"));
+			    JSONArray fields = rawMsg.getJSONObject("schema").getJSONArray("fields");
+			    JSONArray beforeFields = null;
+			    JSONArray afterFields = null;
+			    for (int i  = 0; i < fields.length(); i++) {
+			    	if (fields.getJSONObject(i).getString("field").equals("before")) {
+			    		beforeFields = fields.getJSONObject(i).getJSONArray("fields");
+			    	} else if (fields.getJSONObject(i).getString("field").equals("after")) {
+			    		afterFields = fields.getJSONObject(i).getJSONArray("fields");
+			    	}
+			    }
 			     
-			     List<KafkaType> beforeType = getTypes(beforeFields);
-			     List<KafkaType> afterType = getTypes(afterFields);
-			     	     
-			     JSONObject before = rawMsg.getJSONObject("payload").getJSONObject("before");
-			     JSONObject after = rawMsg.getJSONObject("payload").getJSONObject("after");
+			    List<KafkaType> beforeType = getTypes(beforeFields);
+			    List<KafkaType> afterType = getTypes(afterFields);
+			     
+			    try {
+			    	 JSONObject before = rawMsg.getJSONObject("payload").getJSONObject("before");
+				     JSONObject fixedBefore = new JSONObject();
+			    	 @SuppressWarnings("unchecked")
+					 Iterator<String> beforeFieldNames = before.keys();
+				     while (beforeFieldNames.hasNext()) {
+				    	 String beforeFieldName = beforeFieldNames.next();
+				    	 ObjectWrapper o = parseObject(beforeType, before.get(beforeFieldName), beforeFieldName);
+				    	 fixedBefore.put(beforeFieldName, o == null ? null : o.getValue());
+				     }   
+				     beforeMessage = objectMapper.readValue(fixedBefore.toString(), SysFileInfoMessage.class);
+				     
+			    } catch (JSONException ex) {
+			    }
 			    
-			     JSONObject fixedAfter = new JSONObject();
-			     JSONObject fixedBefore = new JSONObject();
-
-			     @SuppressWarnings("unchecked")
-				 Iterator<String> beforeFieldNames = before.keys();
-			     
-			     while (beforeFieldNames.hasNext()) {
-			    	 String beforeFieldName = beforeFieldNames.next();
-			    	 ObjectWrapper o = parseObject(beforeType, after.get(beforeFieldName), beforeFieldName);
-			    	 fixedBefore.put(beforeFieldName, o == null ? null : o.getValue());
-			     }   
-			     
-			     @SuppressWarnings("unchecked")
-				 Iterator<String> afterFieldNames = after.keys();
-			     
-			     while (afterFieldNames.hasNext()) {
-			    	 String afterFieldName= afterFieldNames.next();
-			    	 ObjectWrapper o = parseObject(afterType, after.get(afterFieldName), afterFieldName);
-			    	 fixedAfter.put(afterFieldName, o == null ? null : o.getValue());
-			     }  
-			  
-			     beforeMessage = objectMapper.readValue(fixedBefore.toString(), SysFileInfoMessage.class);
-			     afterMessage = objectMapper.readValue(fixedAfter.toString(), SysFileInfoMessage.class);
-			     System.out.println("Before Message: " + beforeMessage);
-			     System.out.println("After Message: " + afterMessage);
-			     
-			} catch (JSONException err){
-			     System.out.println("Error "+  err.toString());
+			    try {
+			    	JSONObject after = rawMsg.getJSONObject("payload").getJSONObject("after");	     
+				    JSONObject fixedAfter = new JSONObject();	     
+				    @SuppressWarnings("unchecked")
+					Iterator<String> afterFieldNames = after.keys();
+				     
+				    while (afterFieldNames.hasNext()) {
+				    	String afterFieldName= afterFieldNames.next();
+				    	ObjectWrapper o = parseObject(afterType, after.get(afterFieldName), afterFieldName);
+				    	fixedAfter.put(afterFieldName, o == null ? null : o.getValue());
+				    }  
+				  
+				    afterMessage = objectMapper.readValue(fixedAfter.toString(), SysFileInfoMessage.class);	
+			    } catch (JSONException ex) {
+			    }     
+			} catch (JSONException ex){
+				throw new SyncFileException(ex);
 			}
 			return afterMessage;
 		} catch (Exception ex) {
@@ -137,6 +138,8 @@ public class SysFileInfoMessageDeserializer implements Deserializer<SysFileInfoM
 	}
 	
 	private ObjectWrapper parseObject(List<KafkaType> types, Object o, String fieldName) {
+		if (o == null || o.toString().equals("null")) return null;
+		
 		ObjectWrapper result = null;
 		KafkaType type = null;
 		for (KafkaType kt : types) {

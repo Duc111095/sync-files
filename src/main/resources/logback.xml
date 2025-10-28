@@ -1,37 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE configuration>
 <configuration>
-
+	<property name="LOG_FILE" value="logSyncFile" />
+	<property name="LOG_DIR" value="logs" />
+	<appender name="ROLLINGFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	    <file>${LOG_DIR}/rollingFile/${LOG_FILE}.log</file> 
+	    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+	        <fileNamePattern>${LOG_DIR}/%d{yyyy/MM/dd}/${LOG_FILE}.gz</fileNamePattern>
+	    </rollingPolicy>
+	    <encoder>
+            <pattern>%d{yyyy/MM/dd HH:mm:ss.SSS} %-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+        </encoder>
+	</appender>
+   
   <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
-      <pattern>%5level [%thread] - %msg%n</pattern>
+      <pattern>%d{yyyy/MM/dd HH:mm:ss.SSS} %-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
     </encoder>
   </appender>
-
-	<logger name="com.ducnh.syncfilekafka.repositories.mappers.impl.MaMapper">
-		<appender-ref ref="stdout"/>
-		<level value="trace"></level>
-	</logger>
-	
-	<logger name="com.ducnh.syncfilekafka.repositories.mappers.DefaultMapper">
-		<level value="trace"></level>
-		<appender-ref ref="stdout"/>
-	</logger>
-	
-	<logger name="com.ducnh.syncfilekafka.repositories.mappers.impl.MaMapper">
-		<level value="debug"></level>
-		<appender-ref ref="stdout"/>
-	
-	</logger>
-	
-	<logger name="com.ducnh.syncfilekafka.repositories.mappers.DefaultMapper">
-		<level value="debug"></level>
-		<appender-ref ref="stdout"/>
+ 	<logger name="com.ducnh.syncfilekafka" level="WARN"> 
+        <appender-ref ref="ROLLINGFILE" /> 
+    </logger> 
+	<logger name="com.ducnh.syncfilekafka" level="INFO"> 
+	     <appender-ref ref="ROLLINGFILE" /> 
+	</logger> 
 		
-	</logger>
-		
-	  <root level="error">
-	    <appender-ref ref="stdout"/>
-	  </root>
+  <root level="error">
+    <appender-ref ref="stdout"/>
+    <appender-ref ref="ROLLINGFILE" /> 
+  </root>
 
 </configuration>

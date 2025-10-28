@@ -104,9 +104,13 @@ public interface DefaultMapper {
 	@Select("select * from sysfileinfo where controller='${controller}' and sysKey='${sysKey}' and line_nbr = ${linenbr}")
 	SysFileInfo getSysFileInfoByMessage(SysFileInfoMessage message);
     
-    @Insert("insert into sysfileinfo (controller, syskey, line_nbr, file_name, file_size, file_type, file_ext, file_enc, file_data, datetime0, datetime2, user_id0, user_id2)"
-    		+ "values('${controller}', '${sysKey}', ${linenbr}, N'${filename}', ${filesize}, '${filetype}', '${fileext}', '${fileenc}', '${filedata}', '${datetime0}', '${datetime2}', ${userid0}, ${userid2})")
+    @Insert("insert into sysfileinfo (controller, syskey, line_nbr, file_name, file_size, file_type, file_ext, file_enc, datetime0, datetime2, user_id0, user_id2)"
+    		+ "values('${controller}', '${sysKey}', ${linenbr}, N'${filename}', ${filesize}, '${filetype}', '${fileext}', '${fileenc}' , '${datetime0}', '${datetime2}', ${userid0}, ${userid2})")
     void insertSysFileInfo(SysFileInfo sysFileInfo);
+    
+    @Insert("delete from sysfileinfo where controller='${controller}' and sysKey='${sysKey}' and line_nbr = ${linenbr}")
+    void deleteSysFileInfo(SysFileInfoMessage message);
+    
     
     @Select("select 1 from sysfileinfo where controller='#{controller}' and sysKey='#{sysKey}' and line_nbr = #{linenbr}")
 	Integer checkExistSysFileInfoById(String controller, String sysKey, int linenbr);
