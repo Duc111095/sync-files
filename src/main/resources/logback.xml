@@ -21,9 +21,6 @@
  	<logger name="com.ducnh.syncfilekafka" level="WARN"> 
         <appender-ref ref="ROLLINGFILE" /> 
     </logger> 
-	<logger name="com.ducnh.syncfilekafka" level="INFO"> 
-	     <appender-ref ref="ROLLINGFILE" /> 
-	</logger> 
 		
   <root level="error">
     <appender-ref ref="stdout"/>
