@@ -31,7 +31,7 @@ public class CommonConstants {
 	public static final String TH_DATASOURCE = "thDataSource";
 	
 	public static final String MA = "MA";
-	public static final String MA_TEST = "MA_TEST";
+	public static final String MA_TEST = "MATEST";
 	public static final String NP = "NP";
 	public static final String NA = "NA";
 	public static final String SK = "SK";
