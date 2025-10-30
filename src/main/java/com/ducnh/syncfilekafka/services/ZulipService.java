@@ -1,7 +1,5 @@
 package com.ducnh.syncfilekafka.services;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.slf4j.Logger;
@@ -25,8 +23,9 @@ public class ZulipService {
 		ZulipConfiguration configuration = ZulipConfiguration.fromZuliprc(ResourceUtils.getFile("classpath:zuliprc"));
 		try {
 			zulip = new Zulip(configuration);
-		} catch (ZulipClientException e) {
-			log.error("Error initializing Zullip: " + e.getCause());
+		} catch (ZulipClientException ex) {
+			log.error("Error initializing Zullip: " + ex.getCause());
+			throw new SyncFileException(ex);
 		}
 	}
 	

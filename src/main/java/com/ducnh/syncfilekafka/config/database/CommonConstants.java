@@ -83,12 +83,14 @@ public class CommonConstants {
 	public static final String TH_DATASOURCE_PREFIX = "ds.th";
 	
 	public static final String SYNC_SUCCESSFULLY = "Sync successfully - Sysfileinfo: %s";
+	public static final String SYNC_SUCCESS = "Sync successfully";
 	public static final String DELETE_SUCCESSFULLY = "Delete successfully - Sysfileinfo: %s";
+	public static final String DELETE_SUCCESS = "Delete successfully";
 	public static final String ERROR_DELETE = "Error: Delete - Sysfileinfo: %s";
-	public static final String FILE_EXISTED = "Error: File existed - Sysfileinfo: %s";
+	public static final String FILE_EXISTED = "Error: File existed or not found file in source- Sysfileinfo: %s";
 	public static final String SYSFILEINFO_NOT_FOUND = "Error: Not exist record in source - SysFileInfo: %s";
 	public static final String FILE_NOT_FOUND = "Error: Not exist file - SysFileInfo: %s";
-	
+	public static final String NOT_FOUND_SOURCE_DATABASE = "Error: No source database extract from message";
 	public static final String SYSFILEINFO_EXISTED = "Error: Sysfileinfo existed: %s";
 	public static final String EMPTY_STRING = "";
 	

@@ -2,17 +2,6 @@ spring:
     application:
         name: syncfilekafka
 
-logging:
-    level:
-        org:
-            springframework:
-                context: DEBUG
-            hibernate:
-                SQL: DEBUG
-                type:
-                    descriptor:
-                        sql:
-                            BasicBinder: TRACE		    
 MICROSOFT_DB_USERNAME: sa
 MICROSOFT_DB_PASSWORD: 123456a@@
 
@@ -121,7 +110,7 @@ app:
         haPathFile: \\192.168.60.16\HongAnh\Upload\HongAnh_App
         lkdcPathFile: \\192.168.60.15\lkdc\Upload\LKDC_App
         sendErrorIds: 64
-        logDebugged: true
+        logDebugged: false
         kafka:
           bootstrapServer: 192.168.100.52:9092
           groupIdConsumer: listen1
@@ -130,6 +119,6 @@ app:
           consumerMessageTopic: ""
           consumerMessageTopicPattern: ".*?dbo.sysfileoutbox"
           errorMessageTopic: "syncfileserror"
-          enableAutoCommit: "true"
-          autoCommitIntervalMs: "1000"
+          enableAutoCommit: true
+          autoCommitIntervalMs: 1000
         

@@ -49,7 +49,6 @@ public class CopyFileService {
 		serverMap.put(CommonConstants.HN, appConfig.getHnPathFile());
 		serverMap.put(CommonConstants.HA, appConfig.getHaPathFile());
 		serverMap.put(CommonConstants.LKDC, appConfig.getLkdcPathFile());
-		
 	}
 	
 	public void copyFileAndInsertSysFileInfo(final SysFileInfoMessage message) {
@@ -57,10 +56,14 @@ public class CopyFileService {
 			// Copy File
 			SysFileInfoMessage msgCopy = message;
 			String ntfMs = "";
-			if (msgCopy.getStatus() == appConfig.getIgnoreStatus()) {
+			if (msgCopy.getStatus() == appConfig.getIgnoreStatus() || msgCopy.getOp().equals("r")) {
 				return;
 			}
 			
+			String messageDatabaseSource = msgCopy.getSourceDb();
+			
+			DefaultMapper msgSourceMapper = extractMapperFromPath(messageDatabaseSource);
+	
 			String operation = msgCopy.getOperation().trim();
 			String srcDept = msgCopy.getDeptSrc().trim().toUpperCase();
 			String destDept = msgCopy.getDeptDest().trim().toUpperCase();
@@ -75,11 +78,11 @@ public class CopyFileService {
 						if (destMapper.checkExistSysFileInfoByMessage(msgCopy) != null) {
 							destMapper.deleteSysFileInfo(msgCopy);
 						}
-						ntfMs = CommonConstants.EMPTY_STRING;
+						ntfMs = CommonConstants.DELETE_SUCCESS;
 						if (appConfig.isLogDebugged()) {
 							String successmsg = CommonConstants.DELETE_SUCCESSFULLY;
 							zulipService.sendDirectMessage(successmsg, sendErrorIds);
-							log.info(ntfMs);
+							log.info(successmsg);
 						}
 					} else {
 						ntfMs = CommonConstants.FILE_NOT_FOUND;
@@ -97,14 +100,14 @@ public class CopyFileService {
 						// update message
 						if (destMapper.checkExistSysFileInfoByMessage(msgCopy) == null) {
 							destMapper.insertSysFileInfo(sysFileInfo);
-							ntfMs = CommonConstants.EMPTY_STRING;
+							ntfMs = CommonConstants.SYNC_SUCCESS;
 						} else {
 							ntfMs = CommonConstants.SYSFILEINFO_EXISTED;
 						}
 						if (appConfig.isLogDebugged()) {
 							String successmsg = CommonConstants.SYNC_SUCCESSFULLY;
 							zulipService.sendDirectMessage(successmsg, sendErrorIds);
-							log.info(ntfMs);
+							log.info(successmsg);
 						}
 					} else {
 						ntfMs = CommonConstants.SYSFILEINFO_NOT_FOUND;	
@@ -118,15 +121,17 @@ public class CopyFileService {
 			msgCopy.setUpdateDate(new Timestamp(Instant.now().toEpochMilli()));
 			msgCopy.setStatus('1');
 			msgCopy.setErrMsg(ntfMs.replace("%s", "").trim());
-			srcMapper.updateMessage(msgCopy);
+			msgSourceMapper.updateMessage(msgCopy);
 			if (!ntfMs.equals(CommonConstants.EMPTY_STRING)) {
 				zulipService.sendDirectMessage(ntfMs.formatted(msgCopy), sendErrorIds);
-				log.info(ntfMs);
+				log.info(ntfMs.formatted(msgCopy));
 			}
 		} catch (Exception ex) {
 			String err = "Error: " + message + "-" + ex.toString();
 			zulipService.sendDirectMessage(err, sendErrorIds);
 			log.error(err);
+		} finally {
+			
 		}
 	}
 	
@@ -136,14 +141,14 @@ public class CopyFileService {
 			String destPath = serverMap.get(dest) + File.separator + fileenc;
 			File srcf = new File(srcPath);
 			File destf = new File(destPath);
+			if (!srcf.exists()) return false;
 			if (!destf.exists() || options == appConfig.getOverrideOptions()) {
 				Files.copy(srcf.toPath(), destf.toPath(), StandardCopyOption.REPLACE_EXISTING);
 				return true;  
 			}
 			return false; 
 		} catch (Exception ex) {
-			zulipService.sendDirectMessage(ex.toString(), sendErrorIds);
-			throw new SyncFileException(ex.getMessage());
+			throw new SyncFileException(ex);
 		}
 	}
 	
@@ -157,8 +162,16 @@ public class CopyFileService {
 			}
 			return false; 
 		} catch (Exception ex) {
-			zulipService.sendDirectMessage(ex.toString(), sendErrorIds);
-			throw new SyncFileException(ex.getMessage());
+			throw new SyncFileException(ex);
 		}
+	}
+	
+	private DefaultMapper extractMapperFromPath(String databaseName) {
+		for (Map.Entry<String, String> entry : serverMap.entrySet()) {
+			if (entry.getValue().toLowerCase().contains(databaseName.toLowerCase())) {
+				return dsMapperService.getMapper(entry.getKey());
+			}
+		}
+		return null;
 	}
 }

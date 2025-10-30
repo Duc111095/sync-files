@@ -53,7 +53,10 @@ public class SysFileInfoMessageDeserializer implements Deserializer<SysFileInfoM
 			     
 			    List<KafkaType> beforeType = getTypes(beforeFields);
 			    List<KafkaType> afterType = getTypes(afterFields);
-			     
+			    
+			    //beforeMessage = updateGeneralInformation(rawMsg, beforeMessage);
+			    //afterMessage = updateGeneralInformation(rawMsg, afterMessage);
+
 			    try {
 			    	 JSONObject before = rawMsg.getJSONObject("payload").getJSONObject("before");
 				     JSONObject fixedBefore = new JSONObject();
@@ -64,6 +67,7 @@ public class SysFileInfoMessageDeserializer implements Deserializer<SysFileInfoM
 				    	 ObjectWrapper o = parseObject(beforeType, before.get(beforeFieldName), beforeFieldName);
 				    	 fixedBefore.put(beforeFieldName, o == null ? null : o.getValue());
 				     }   
+					 insertGeneralInformation(rawMsg, fixedBefore);
 				     beforeMessage = objectMapper.readValue(fixedBefore.toString(), SysFileInfoMessage.class);
 				     
 			    } catch (JSONException ex) {
@@ -80,7 +84,8 @@ public class SysFileInfoMessageDeserializer implements Deserializer<SysFileInfoM
 				    	ObjectWrapper o = parseObject(afterType, after.get(afterFieldName), afterFieldName);
 				    	fixedAfter.put(afterFieldName, o == null ? null : o.getValue());
 				    }  
-				  
+				    
+				    insertGeneralInformation(rawMsg, fixedAfter);
 				    afterMessage = objectMapper.readValue(fixedAfter.toString(), SysFileInfoMessage.class);	
 			    } catch (JSONException ex) {
 			    }     
@@ -170,6 +175,39 @@ public class SysFileInfoMessageDeserializer implements Deserializer<SysFileInfoM
 				break;
 		}
 		return result;
+	}
+	
+	private SysFileInfoMessage updateGeneralInformation(JSONObject rawMsg, SysFileInfoMessage message) throws JSONException {
+		SysFileInfoMessage updatedMessage = message;
+		JSONObject payload = rawMsg.getJSONObject("payload");
+		String op = payload.getString("op");
+		JSONObject source = payload.getJSONObject("source");
+		String name = source.getString("name");
+		String db = source.getString("db");
+		String schema = source.getString("schema");
+		String table = source.getString("table");
+		updatedMessage.setOp(op);
+		updatedMessage.setSourceDb(db);
+		updatedMessage.setSourceName(name);
+		updatedMessage.setSourceSchema(schema);
+		updatedMessage.setSourceTable(table);
+		return updatedMessage;
+		
+	}
+	
+	private void insertGeneralInformation(JSONObject rawMsg, JSONObject updateObject) throws JSONException {
+		JSONObject payload = rawMsg.getJSONObject("payload");
+		String op = payload.getString("op");
+		JSONObject source = payload.getJSONObject("source");
+		String name = source.getString("name");
+		String db = source.getString("db");
+		String schema = source.getString("schema");
+		String table = source.getString("table");
+		updateObject.put("op",op);
+		updateObject.put("sourceDb", db);
+		updateObject.put("sourceSchema", schema);
+		updateObject.put("sourceTable", table);
+		updateObject.put("sourceName", name);
 	}
 	
 	@Override

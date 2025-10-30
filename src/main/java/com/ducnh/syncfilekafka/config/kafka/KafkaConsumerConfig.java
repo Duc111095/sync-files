@@ -50,8 +50,8 @@ public class KafkaConsumerConfig {
 		Map<String, Object> props = new HashMap<>();
 		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProps.getBootstrapServer());
 		props.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaProps.getGroupIdConsumer());
-		props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, kafkaProps.getEnableAutoCommit());
-		props.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, kafkaProps.getAutoCommitIntervalMs());
+		props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, Boolean.valueOf(kafkaProps.getEnableAutoCommit()));
+		props.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, Integer.valueOf(kafkaProps.getAutoCommitIntervalMs()));
 		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, valueDeserializerClass);
 		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, kafkaProps.getAutoOffsetReset());

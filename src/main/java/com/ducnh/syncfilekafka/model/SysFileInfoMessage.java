@@ -47,6 +47,11 @@ public class SysFileInfoMessage {
 	@JsonProperty("err_message")
 	private String errMsg;
 	private char status;
+	private String op;
+	private String sourceName;
+	private String sourceDb;
+	private String sourceSchema;
+	private String sourceTable;
 	
 	public SysFileInfoMessage() {
 		
@@ -62,11 +67,17 @@ public class SysFileInfoMessage {
 		sb.append("deptSrc=").append(deptSrc).append(",");
 		sb.append("deptDest=").append(deptDest).append(",");
 		sb.append("options=").append(options).append(",");
+		sb.append("operation=").append(operation).append(",");
 		sb.append("datetime0=").append(datetime0).append(",");
 		sb.append("datetime2=").append(datetime2).append(",");
 		sb.append("createDate=").append(createDate).append(",");
 		sb.append("updateDate=").append(updateDate).append(",");
 		sb.append("errMsg=").append(errMsg).append(",");
+		sb.append("op=").append(op).append(",");
+		sb.append("sourceName=").append(sourceName).append(",");
+		sb.append("sourceDb=").append(sourceDb).append(",");
+		sb.append("sourceSchema=").append(sourceSchema).append(",");
+		sb.append("sourceTable=").append(sourceTable).append(",");
 		sb.append("status=").append(status).append("]");		
 		return sb.toString();
 	}
