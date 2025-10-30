@@ -123,8 +123,8 @@ public class CopyFileService {
 			msgCopy.setErrMsg(ntfMs.replace("%s", "").trim());
 			msgSourceMapper.updateMessage(msgCopy);
 			if (!ntfMs.equals(CommonConstants.EMPTY_STRING)) {
-				zulipService.sendDirectMessage(ntfMs.formatted(msgCopy), sendErrorIds);
-				log.info(ntfMs.formatted(msgCopy));
+				zulipService.sendDirectMessage(ntfMs.formatted(message), sendErrorIds);
+				log.info(ntfMs.formatted(message));
 			}
 		} catch (Exception ex) {
 			String err = "Error: " + message + "-" + ex.toString();
