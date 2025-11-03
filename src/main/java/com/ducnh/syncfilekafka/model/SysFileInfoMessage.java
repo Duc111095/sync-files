@@ -57,6 +57,38 @@ public class SysFileInfoMessage {
 		
 	}
 	
+	public SysFileInfoMessage getDeepCopyMessage() {
+		SysFileInfoMessage newMessage = new SysFileInfoMessage();
+		newMessage.setId(getId());
+		newMessage.setController(getController());
+		newMessage.setSysKey(getSysKey());
+		newMessage.setLinenbr(getLinenbr());
+		newMessage.setFilename(getFilename());
+		newMessage.setFileext(getFileext());
+		newMessage.setFilesize(getFilesize());
+		newMessage.setFiledata(getFiledata());
+		newMessage.setFiletype(getFiletype());
+		newMessage.setFileenc(getFileenc());
+		newMessage.setDatetime0(getDatetime0());
+		newMessage.setDatetime2(getDatetime2());
+		newMessage.setUserid0(getUserid0());
+		newMessage.setUserid2(getUserid2());
+		newMessage.setDeptSrc(getDeptSrc());
+		newMessage.setDeptDest(getDeptDest());
+		newMessage.setOperation(getOperation());
+		newMessage.setOptions(getOptions()); 
+		newMessage.setCreateDate(getCreateDate());
+		newMessage.setUpdateDate(getUpdateDate());
+		newMessage.setErrMsg(getErrMsg());
+		newMessage.setStatus(getStatus());
+		newMessage.setOp(getOp());
+		newMessage.setSourceName(getSourceName());
+		newMessage.setSourceDb(getSourceDb());
+		newMessage.setSourceSchema(getSourceSchema());
+		newMessage.setSourceTable(getSourceTable());
+		return newMessage;
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

@@ -54,12 +54,13 @@ public class CopyFileService {
 	public void copyFileAndInsertSysFileInfo(final SysFileInfoMessage message) {
 		try {
 			// Copy File
-			SysFileInfoMessage msgCopy = message;
+			SysFileInfoMessage msgCopy = message.getDeepCopyMessage();
 			String ntfMs = "";
 			if (msgCopy.getStatus() == appConfig.getIgnoreStatus() || msgCopy.getOp().equals("r")) {
 				return;
 			}
-			
+			System.out.println(msgCopy.getStatus());
+
 			String messageDatabaseSource = msgCopy.getSourceDb();
 			
 			DefaultMapper msgSourceMapper = extractMapperFromPath(messageDatabaseSource);
@@ -99,7 +100,9 @@ public class CopyFileService {
 						// insert SysFileInfo
 						if (checkSysFileExistByTimeout(msgCopy, srcMapper, appConfig.getTimeout())) {
 							SysFileInfo sysFileInfo = srcMapper.getSysFileInfoByMessage(msgCopy);
-  
+							if (msgCopy.getOptions() == appConfig.getOverrideOptions()) {
+								
+							}
 							// update message
 							if (destMapper.checkExistSysFileInfo(sysFileInfo) == null) {
 								destMapper.insertSysFileInfo(sysFileInfo);
@@ -136,6 +139,7 @@ public class CopyFileService {
 			msgCopy.setStatus('1');
 			msgCopy.setErrMsg(ntfMs.replace("%s", "").trim());
 			msgSourceMapper.updateMessage(msgCopy);
+			System.out.println(message);
 			if (!ntfMs.equals(CommonConstants.EMPTY_STRING)) {
 				zulipService.sendDirectMessage(ntfMs.formatted(message), sendErrorIds);
 				log.info(ntfMs.formatted(message));
