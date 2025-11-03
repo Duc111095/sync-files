@@ -106,7 +106,7 @@ public class CopyFileService {
 								ntfMs = CommonConstants.SYNC_SUCCESS;
 							} else {
 								if (appConfig.isAppendable()) {
-									Integer maxLinenbr = destMapper.getMaxLineNumber(msgCopy);
+									Integer maxLinenbr = destMapper.getMaxLineNumberByMessage(msgCopy);
 									sysFileInfo.setLinenbr(maxLinenbr == null ? 1 : maxLinenbr + 1);
 									destMapper.insertSysFileInfo(sysFileInfo);
 									ntfMs = CommonConstants.SYNC_SUCCESS;

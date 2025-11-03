@@ -115,13 +115,13 @@ public interface DefaultMapper {
 	Integer checkExistSysFileInfoByFileenc(String controller, String sysKey, String	fileenc);
     
     @Select("select 1 from sysfileinfo where controller='${controller}' and sysKey='${sysKey}' and fileenc = '${fileenc}'")
-   	Integer checkExistSysFileInfoByFileenc(SysFileInfoMessage msg);
+   	Integer checkExistSysFileInfoByFileencMessage(SysFileInfoMessage msg);
      
     @Select("select max(line_nbr) from sysfileinfo where controller='#{controller}' and sysKey='#{sysKey}'")
    	Integer getMaxLineNumber(String controller, String sysKey);
     
     @Select("select max(line_nbr) from sysfileinfo where controller='${controller}' and sysKey='${sysKey}'")
-  	Integer getMaxLineNumber(SysFileInfoMessage msg);
+  	Integer getMaxLineNumberByMessage(SysFileInfoMessage msg);
     
     @Select("select 1 from sysfileinfo where controller='#{controller}' and sysKey='#{sysKey}' and line_nbr = #{linenbr}")
 	Integer checkExistSysFileInfoById(String controller, String sysKey, int linenbr);
