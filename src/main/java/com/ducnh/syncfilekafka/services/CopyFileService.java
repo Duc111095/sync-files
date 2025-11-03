@@ -59,7 +59,6 @@ public class CopyFileService {
 			if (msgCopy.getStatus() == appConfig.getIgnoreStatus() || msgCopy.getOp().equals("r")) {
 				return;
 			}
-			System.out.println(msgCopy.getStatus());
 
 			String messageDatabaseSource = msgCopy.getSourceDb();
 			
@@ -74,7 +73,7 @@ public class CopyFileService {
 			
 			if (operation.equalsIgnoreCase("delete")) {
 				try {
-					boolean deleted = deleteFile(fileName, srcDept, destDept, msgCopy.getOptions());
+					boolean deleted = deleteFile(fileName, destDept, msgCopy.getOptions());
 					if (deleted) {
 						// delete SysFileInfo
 						if (destMapper.checkExistSysFileInfoByMessage(msgCopy) != null) {
@@ -100,9 +99,8 @@ public class CopyFileService {
 						// insert SysFileInfo
 						if (checkSysFileExistByTimeout(msgCopy, srcMapper, appConfig.getTimeout())) {
 							SysFileInfo sysFileInfo = srcMapper.getSysFileInfoByMessage(msgCopy);
-							if (msgCopy.getOptions() == appConfig.getOverrideOptions()) {
-								
-							}
+							updateController(sysFileInfo);
+
 							// update message
 							if (destMapper.checkExistSysFileInfo(sysFileInfo) == null) {
 								destMapper.insertSysFileInfo(sysFileInfo);
@@ -139,7 +137,6 @@ public class CopyFileService {
 			msgCopy.setStatus('1');
 			msgCopy.setErrMsg(ntfMs.replace("%s", "").trim());
 			msgSourceMapper.updateMessage(msgCopy);
-			System.out.println(message);
 			if (!ntfMs.equals(CommonConstants.EMPTY_STRING)) {
 				zulipService.sendDirectMessage(ntfMs.formatted(message), sendErrorIds);
 				log.info(ntfMs.formatted(message));
@@ -150,6 +147,15 @@ public class CopyFileService {
 			log.error(err);
 		} finally {
 			
+		}
+	}
+	
+	private void updateController(SysFileInfo src) {
+		for (Map.Entry<String, String> m : appConfig.getReplaceController().entrySet()) {
+			if (src.getController().equalsIgnoreCase(m.getKey())) {
+				src.setController(m.getValue());
+				break;
+			}
 		}
 	}
 	
@@ -205,7 +211,7 @@ public class CopyFileService {
 		}
 	}
 	
-	private boolean deleteFile(String fileenc, String src, String dest, char options) {
+	private boolean deleteFile(String fileenc, String dest, char options) {
 		try {
 			String destPath = serverMap.get(dest) + File.separator + fileenc;
 			File destf = new File(destPath);

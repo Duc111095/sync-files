@@ -1,5 +1,7 @@
 package com.ducnh.syncfilekafka.config;
 
+import java.util.Map;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +29,7 @@ public class AppConfig {
 	private boolean logDebugged;
 	private boolean isAppendable;
 	private int timeout;
+	private Map<String, String> replaceController;
 	
 	public long[] getSendErrorIdsArray() {
 		String[] strArr = sendErrorIds.split(",");
