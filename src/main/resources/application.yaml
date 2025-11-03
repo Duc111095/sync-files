@@ -97,6 +97,8 @@ app:
     config:
         overrideOptions: '1' ## co ghi de k?
         ignoreStatus: '1'
+        timeout: 30
+        appendable: false
         maPathFile: \\192.168.100.53\MinhAn\Upload\MinhAn_App
         maTestPathFile: \\192.168.100.53\MinhAn ERP\Upload\MINHAN_Test_App
         npPathFile: \\192.168.5.11\NamPhuong\Upload\NamPhuong_App

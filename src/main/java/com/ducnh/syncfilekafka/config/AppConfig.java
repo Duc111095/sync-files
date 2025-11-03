@@ -25,6 +25,8 @@ public class AppConfig {
 	private String lkdcPathFile;
 	private String sendErrorIds;
 	private boolean logDebugged;
+	private boolean isAppendable;
+	private int timeout;
 	
 	public long[] getSendErrorIdsArray() {
 		String[] strArr = sendErrorIds.split(",");

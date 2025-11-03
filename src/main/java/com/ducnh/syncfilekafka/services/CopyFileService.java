@@ -67,12 +67,13 @@ public class CopyFileService {
 			String operation = msgCopy.getOperation().trim();
 			String srcDept = msgCopy.getDeptSrc().trim().toUpperCase();
 			String destDept = msgCopy.getDeptDest().trim().toUpperCase();
+			String fileName = msgCopy.getFileenc();
 			DefaultMapper srcMapper = dsMapperService.getMapper(srcDept);
 			DefaultMapper destMapper = dsMapperService.getMapper(destDept);
-
+			
 			if (operation.equalsIgnoreCase("delete")) {
 				try {
-					boolean deleted = deleteFile(msgCopy.getFileenc(), srcDept, destDept, msgCopy.getOptions());
+					boolean deleted = deleteFile(fileName, srcDept, destDept, msgCopy.getOptions());
 					if (deleted) {
 						// delete SysFileInfo
 						if (destMapper.checkExistSysFileInfoByMessage(msgCopy) != null) {
@@ -91,29 +92,42 @@ public class CopyFileService {
 					ntfMs = CommonConstants.ERROR_DELETE;
 				}
 			} else if (operation.equalsIgnoreCase("insert")) {
-				boolean copied = copyFile(msgCopy.getFileenc(), srcDept, destDept, msgCopy.getOptions());
-				if (copied) {
-					// insert SysFileInfo
-					if (srcMapper.checkExistSysFileInfoByMessage(msgCopy) != null) {
-						SysFileInfo sysFileInfo = srcMapper.getSysFileInfoByMessage(msgCopy);
-
-						// update message
-						if (destMapper.checkExistSysFileInfoByMessage(msgCopy) == null) {
-							destMapper.insertSysFileInfo(sysFileInfo);
-							ntfMs = CommonConstants.SYNC_SUCCESS;
+				boolean fileSrcExisted = checkFileExistByTimeout(fileName, srcDept, appConfig.getTimeout());
+				if (fileSrcExisted) {
+					boolean copied = copyFile(fileName, srcDept, destDept, msgCopy.getOptions());
+					if (copied) {
+						// insert SysFileInfo
+						if (checkSysFileExistByTimeout(msgCopy, srcMapper, appConfig.getTimeout())) {
+							SysFileInfo sysFileInfo = srcMapper.getSysFileInfoByMessage(msgCopy);
+  
+							// update message
+							if (destMapper.checkExistSysFileInfo(sysFileInfo) == null) {
+								destMapper.insertSysFileInfo(sysFileInfo);
+								ntfMs = CommonConstants.SYNC_SUCCESS;
+							} else {
+								if (appConfig.isAppendable()) {
+									Integer maxLinenbr = destMapper.getMaxLineNumber(msgCopy);
+									sysFileInfo.setLinenbr(maxLinenbr == null ? 1 : maxLinenbr + 1);
+									destMapper.insertSysFileInfo(sysFileInfo);
+									ntfMs = CommonConstants.SYNC_SUCCESS;
+								} 
+								ntfMs = CommonConstants.SYSFILEINFO_EXISTED;
+							}
+							if (appConfig.isLogDebugged()) {
+								String successmsg = CommonConstants.SYNC_SUCCESSFULLY;
+								zulipService.sendDirectMessage(successmsg, sendErrorIds);
+								log.info(successmsg);
+							}
 						} else {
-							ntfMs = CommonConstants.SYSFILEINFO_EXISTED;
-						}
-						if (appConfig.isLogDebugged()) {
-							String successmsg = CommonConstants.SYNC_SUCCESSFULLY;
-							zulipService.sendDirectMessage(successmsg, sendErrorIds);
-							log.info(successmsg);
+							ntfMs = CommonConstants.SYSFILEINFO_NOT_FOUND;	
 						}
 					} else {
-						ntfMs = CommonConstants.SYSFILEINFO_NOT_FOUND;	
+						ntfMs = CommonConstants.FILE_EXISTED;
 					}
-				} else {
-					ntfMs = CommonConstants.FILE_EXISTED;
+				}
+				// file chua dc luu
+				else {
+					ntfMs = CommonConstants.NOT_FOUND_FILE_SOURCE;
 				}
 			}
 
@@ -132,6 +146,41 @@ public class CopyFileService {
 			log.error(err);
 		} finally {
 			
+		}
+	}
+	
+	private boolean checkFileExistByTimeout(String fineenc, String src, int timeout) {
+		try {
+			Long start = System.currentTimeMillis();
+			String srcPath = serverMap.get(src) + File.separator + fineenc;
+			File srcf = new File(srcPath);
+			while (System.currentTimeMillis() - start < timeout * 1_000) {
+				if (srcf.exists()) {
+					return true;
+				}
+				Thread.sleep(1000);
+			}
+			return false;
+			
+		} catch (Exception ex) {
+			throw new SyncFileException(ex);
+		}
+	}
+	
+	
+	private boolean checkSysFileExistByTimeout(SysFileInfoMessage msg, DefaultMapper mapper, int timeout) {
+		try {
+			Long start = System.currentTimeMillis();
+			while (System.currentTimeMillis() - start < timeout * 1_000) {
+				if (mapper.checkExistSysFileInfoByMessage(msg) != null) {
+					return true;
+				}
+				Thread.sleep(1000);
+			}
+			return false;
+			
+		} catch (Exception ex) {
+			throw new SyncFileException(ex);
 		}
 	}
 	

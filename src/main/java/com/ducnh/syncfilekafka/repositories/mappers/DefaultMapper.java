@@ -111,6 +111,17 @@ public interface DefaultMapper {
     @Insert("delete from sysfileinfo where controller='${controller}' and sysKey='${sysKey}' and line_nbr = ${linenbr}")
     void deleteSysFileInfo(SysFileInfoMessage message);
     
+    @Select("select 1 from sysfileinfo where controller='#{controller}' and sysKey='#{sysKey}' and fileenc = '#{fileenc}'")
+	Integer checkExistSysFileInfoByFileenc(String controller, String sysKey, String	fileenc);
+    
+    @Select("select 1 from sysfileinfo where controller='${controller}' and sysKey='${sysKey}' and fileenc = '${fileenc}'")
+   	Integer checkExistSysFileInfoByFileenc(SysFileInfoMessage msg);
+     
+    @Select("select max(line_nbr) from sysfileinfo where controller='#{controller}' and sysKey='#{sysKey}'")
+   	Integer getMaxLineNumber(String controller, String sysKey);
+    
+    @Select("select max(line_nbr) from sysfileinfo where controller='${controller}' and sysKey='${sysKey}'")
+  	Integer getMaxLineNumber(SysFileInfoMessage msg);
     
     @Select("select 1 from sysfileinfo where controller='#{controller}' and sysKey='#{sysKey}' and line_nbr = #{linenbr}")
 	Integer checkExistSysFileInfoById(String controller, String sysKey, int linenbr);
@@ -120,4 +131,10 @@ public interface DefaultMapper {
     
     @Select("select 1 from sysfileinfo where controller='${controller}' and sysKey='${sysKey}' and line_nbr = ${linenbr}")
     Integer checkExistSysFileInfoByMessage(SysFileInfoMessage sysFileInfo);
+    
+    @Select("select 1 from sysfileinfo where controller='${controller}' and sysKey='${sysKey}' and flienec = '${fileName}'")
+    Integer checkExistSysFileInfoByFileEncMsg(SysFileInfoMessage sysFileInfo);
+    
+    @Select("select 1 from sysfileinfo where flienec = '#{fileName}'")
+    Integer checkExistSysFileInfoByFileName(String fileName);
 }

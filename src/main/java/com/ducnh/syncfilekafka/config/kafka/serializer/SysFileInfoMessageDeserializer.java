@@ -36,6 +36,8 @@ public class SysFileInfoMessageDeserializer implements Deserializer<SysFileInfoM
 			if (data == null) {
 				return null;
 			}
+			
+			@SuppressWarnings("unused")
 			SysFileInfoMessage beforeMessage = new SysFileInfoMessage();
 			SysFileInfoMessage afterMessage = new SysFileInfoMessage();
 			try {
@@ -177,6 +179,8 @@ public class SysFileInfoMessageDeserializer implements Deserializer<SysFileInfoM
 		return result;
 	}
 	
+	
+	@SuppressWarnings("unused")
 	private SysFileInfoMessage updateGeneralInformation(JSONObject rawMsg, SysFileInfoMessage message) throws JSONException {
 		SysFileInfoMessage updatedMessage = message;
 		JSONObject payload = rawMsg.getJSONObject("payload");

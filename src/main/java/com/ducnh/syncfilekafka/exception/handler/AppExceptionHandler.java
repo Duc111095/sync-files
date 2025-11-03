@@ -19,7 +19,7 @@ public class AppExceptionHandler {
 	private final AppConfig appConfig;
 	private final ZulipService zulipService;
 	
-    @ExceptionHandler({ SyncFileException.class })  // Có thể bắt nhiều loại exception
+    @ExceptionHandler({ SyncFileException.class })
     public void handleExceptionA(Exception e) {
     	log.error(e.getMessage());
     	zulipService.sendDirectMessage(e.getMessage(), appConfig.getSendErrorIdsArray());

@@ -93,6 +93,7 @@ public class CommonConstants {
 	public static final String NOT_FOUND_SOURCE_DATABASE = "Error: No source database extract from message";
 	public static final String SYSFILEINFO_EXISTED = "Error: Sysfileinfo existed: %s";
 	public static final String EMPTY_STRING = "";
+	public static final String NOT_FOUND_FILE_SOURCE = "Not found file in source path";
 	
 	public static final List<String> LIST_DATASOURCES = List.of(MA_DATASOURCE, MA_TEST_DATASOURCE, NP_DATASOURCE, NA_DATASOURCE, SK_DATASOURCE, TB_DATASOURCE, CNMT_DATASOURCE, CTDM_DATASOURCE, HN_DATASOURCE, HA_DATASOURCE, LKDC_DATASOURCE, TH_DATASOURCE);
 	public static final List<String> LIST_DEPTS = List.of(MA, MA_TEST, NP, NA, SK, TB, CNMT, CTDM, HN, HA, LKDC, TH);
