@@ -95,6 +95,7 @@ ds:
 
 app:
     config:
+        replaceController: {"Item_core": "Item"}
         overrideOptions: '1' ## co ghi de k?
         ignoreStatus: '1'
         timeout: 30

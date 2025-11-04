@@ -59,7 +59,7 @@ public class CopyFileService {
 			if (msgCopy.getStatus() == appConfig.getIgnoreStatus() || msgCopy.getOp().equals("r")) {
 				return;
 			}
-
+			
 			String messageDatabaseSource = msgCopy.getSourceDb();
 			
 			DefaultMapper msgSourceMapper = extractMapperFromPath(messageDatabaseSource);
@@ -70,7 +70,7 @@ public class CopyFileService {
 			String fileName = msgCopy.getFileenc();
 			DefaultMapper srcMapper = dsMapperService.getMapper(srcDept);
 			DefaultMapper destMapper = dsMapperService.getMapper(destDept);
-			
+			System.out.println(msgCopy);
 			if (operation.equalsIgnoreCase("delete")) {
 				try {
 					boolean deleted = deleteFile(fileName, destDept, msgCopy.getOptions());
@@ -93,6 +93,7 @@ public class CopyFileService {
 				}
 			} else if (operation.equalsIgnoreCase("insert")) {
 				boolean fileSrcExisted = checkFileExistByTimeout(fileName, srcDept, appConfig.getTimeout());
+				System.out.println(fileSrcExisted);
 				if (fileSrcExisted) {
 					boolean copied = copyFile(fileName, srcDept, destDept, msgCopy.getOptions());
 					if (copied) {
@@ -200,6 +201,7 @@ public class CopyFileService {
 			String destPath = serverMap.get(dest) + File.separator + fileenc;
 			File srcf = new File(srcPath);
 			File destf = new File(destPath);
+			System.out.println(srcf);
 			if (!srcf.exists()) return false;
 			if (!destf.exists() || options == appConfig.getOverrideOptions()) {
 				Files.copy(srcf.toPath(), destf.toPath(), StandardCopyOption.REPLACE_EXISTING);

@@ -1,5 +1,12 @@
 package com.ducnh.syncfilekafka;
 
+import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemManager;
+import org.apache.commons.vfs2.FileSystemOptions;
+import org.apache.commons.vfs2.Selectors;
+import org.apache.commons.vfs2.VFS;
+import org.apache.commons.vfs2.auth.StaticUserAuthenticator;
+import org.apache.commons.vfs2.impl.DefaultFileSystemConfigBuilder;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +22,23 @@ public class RunConsumerKafkaService implements CommandLineRunner {
 
     @Override
     public void run(String...args) throws Exception {
+    	/*
+    	String domain = "MITALAB";
+		String username = "administrator";
+		String password = "Fbo@1234";
+	    StaticUserAuthenticator auth = new StaticUserAuthenticator(domain, username, password);
+	    FileSystemOptions opts = new FileSystemOptions();
+	    DefaultFileSystemConfigBuilder.getInstance().setUserAuthenticator(opts, auth);
+	    */
+	    FileSystemManager manager = VFS.getManager();
+	    
+	    FileObject local = manager.resolveFile(
+	    		"\\\\192.168.100.53\\MinhAn ERP\\Upload\\MINHAN_Test_App\\e118eac10098420790f51b94699a2127" );
+	    System.out.println(local.getPublicURIString());
+	    System.out.println(local.exists());
+	    FileObject remote = manager.resolveFile(
+	    		"\\\\192.168.5.11\\NamPhuong\\Upload\\NamPhuong_App\\e118eac10098420790f51b94699a2127");
+	    System.out.println(remote.exists());
         consumerService.consumeMessage();
     }
 }
