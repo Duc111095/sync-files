@@ -22,14 +22,14 @@ public class RunConsumerKafkaService implements CommandLineRunner {
 
     @Override
     public void run(String...args) throws Exception {
-    	/*
+    	
     	String domain = "MITALAB";
 		String username = "administrator";
-		String password = "Fbo@1234";
+		String password = "Fbo@123";
 	    StaticUserAuthenticator auth = new StaticUserAuthenticator(domain, username, password);
 	    FileSystemOptions opts = new FileSystemOptions();
 	    DefaultFileSystemConfigBuilder.getInstance().setUserAuthenticator(opts, auth);
-	    */
+	    
 	    FileSystemManager manager = VFS.getManager();
 	    
 	    FileObject local = manager.resolveFile(
