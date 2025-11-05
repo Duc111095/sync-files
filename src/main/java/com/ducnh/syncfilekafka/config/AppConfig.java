@@ -28,6 +28,7 @@ public class AppConfig {
 	private String sendErrorIds;
 	private boolean logDebugged;
 	private boolean isAppendable;
+	private boolean deleteFileBeforeInsert;
 	private int timeout;
 	private Map<String, String> replaceController;
 	

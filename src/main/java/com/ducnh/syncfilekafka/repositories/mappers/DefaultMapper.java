@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.ResultMap;
@@ -108,14 +109,23 @@ public interface DefaultMapper {
     		+ "values('${controller}', '${sysKey}', ${linenbr}, N'${filename}', ${filesize}, '${filetype}', '${fileext}', '${fileenc}' , '${datetime0}', '${datetime2}', ${userid0}, ${userid2})")
     void insertSysFileInfo(SysFileInfo sysFileInfo);
     
-    @Insert("delete from sysfileinfo where controller='${controller}' and sysKey='${sysKey}' and line_nbr = ${linenbr}")
+    @Delete("delete from sysfileinfo where controller='${controller}' and sysKey='${sysKey}' and fileenc = ${fileenc}")
     void deleteSysFileInfo(SysFileInfoMessage message);
     
+    @Delete("delete from sysfileinfo where controller='#{controller}' and sysKey='#{sysKey}' and fileenc = '#{fileenc}'")
+    void deleteSysFileInfo2(String controller, String sysKey, String fileenc);
+    
+    @Delete("delete from sysfileinfo where controller='${controller}' and sysKey='${sysKey}'")
+    void deleteSysFileInfos(SysFileInfo sysFileInfo);
+    
+    @Delete("delete from sysfileinfo where controller='#{controller}' and sysKey='#{sysKey}'")
+    void deleteSysFileInfos2(String controller, String sysKey);
+    
     @Select("select 1 from sysfileinfo where controller='#{controller}' and sysKey='#{sysKey}' and fileenc = '#{fileenc}'")
-	Integer checkExistSysFileInfoByFileenc(String controller, String sysKey, String	fileenc);
+	Integer checkExistSysFileInfoByFileenc2(String controller, String sysKey, String fileenc);
     
     @Select("select 1 from sysfileinfo where controller='${controller}' and sysKey='${sysKey}' and fileenc = '${fileenc}'")
-   	Integer checkExistSysFileInfoByFileencMessage(SysFileInfoMessage msg);
+   	Integer checkExistSysFileInfoByFileenc(SysFileInfo msg);
      
     @Select("select max(line_nbr) from sysfileinfo where controller='#{controller}' and sysKey='#{sysKey}'")
    	Integer getMaxLineNumber(String controller, String sysKey);
@@ -139,10 +149,10 @@ public interface DefaultMapper {
     Integer checkExistSysFileInfoByFileName(String fileName);
     
     @Select("select 1 from sysfileinfo where controller='#{controller}' and sysKey='#{sysKey}'")
-    Integer checkExistSysFileInfoByControllerSysKey(String fileName, String sysKey);
+    Integer checkExistSysFileInfoByControllerSysKey(String controller, String sysKey);
     
     @Select("select 1 from sysfileinfo where controller='${controller}' and sysKey='${sysKey}'")
-    Integer checkExistSysFileInfoByControllerSysKeyMessage(SysFileInfoMessage sysFileInfo);
+    Integer checkExistSysFileInfoByControllerSysKeyMessage(SysFileInfo sysFileInfo);
     
 	@ResultMap("sysFileInfoResult")
     @Select("select * from sysfileinfo where controller='${controller}' and sysKey='${sysKey}'")

@@ -178,6 +178,7 @@ app:
         lkdcPathFile: Upload\LKDC_App
         sendErrorIds: 64
         logDebugged: false
+        deleteFileBeforeInsert: false
         kafka:
           bootstrapServer: 192.168.100.52:9092
           groupIdConsumer: listen1
