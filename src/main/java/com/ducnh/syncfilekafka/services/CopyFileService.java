@@ -75,6 +75,19 @@ public class CopyFileService {
 		serverMap.put(CommonConstants.LKDC, appConfig.getLkdcPathFile());
 	}
 	
+	/**
+	 * Message: only include controller - sysKey - deptSrc - deptDest - source database
+	 * Options: 1 - ghi de, 0 - ghi de file
+	 * Options: 1 - append sysfileinfo
+	 * Actions: delete - insert
+	 * 
+	 * 
+	 * @param message
+	 */
+	public void copyFileAndInsertSysfileInfoV2(final SysFileInfoMessage message) {
+		
+	}
+	
 	public void copyFileAndInsertSysFileInfo(final SysFileInfoMessage message) {
 		try {
 			// Copy File
@@ -85,7 +98,6 @@ public class CopyFileService {
 			}
 			
 			String messageDatabaseSource = msgCopy.getSourceDb();
-			
 			DefaultMapper msgSourceMapper = extractMapperFromPath(messageDatabaseSource);
 	
 			String operation = msgCopy.getOperation().trim();
@@ -97,6 +109,8 @@ public class CopyFileService {
 
 			DefaultMapper srcMapper = dsMapperService.getMapper(srcDept);
 			DefaultMapper destMapper = dsMapperService.getMapper(destDept);
+			
+			
 			if (operation.equalsIgnoreCase("delete")) {
 				try {
 					boolean deleted = deleteFile(fileName, destDept, msgCopy.getOptions(), destProps);
@@ -194,8 +208,6 @@ public class CopyFileService {
 			}
 		}
 	}
-	
-
 	
 	private boolean checkFileExistByTimeout(String fineenc, String src, int timeout, ServerProps srcProps) {
 		String srcPath = transformPath(serverMap.get(src) + java.io.File.separator + fineenc);

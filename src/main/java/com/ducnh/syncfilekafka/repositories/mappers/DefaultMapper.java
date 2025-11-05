@@ -137,4 +137,14 @@ public interface DefaultMapper {
     
     @Select("select 1 from sysfileinfo where flienec = '#{fileName}'")
     Integer checkExistSysFileInfoByFileName(String fileName);
+    
+    @Select("select 1 from sysfileinfo where controller='#{controller}' and sysKey='#{sysKey}'")
+    Integer checkExistSysFileInfoByControllerSysKey(String fileName, String sysKey);
+    
+    @Select("select 1 from sysfileinfo where controller='${controller}' and sysKey='${sysKey}'")
+    Integer checkExistSysFileInfoByControllerSysKeyMessage(SysFileInfoMessage sysFileInfo);
+    
+	@ResultMap("sysFileInfoResult")
+    @Select("select * from sysfileinfo where controller='${controller}' and sysKey='${sysKey}'")
+    List<SysFileInfo> getSysFileInfosByControllerSysKeyMessage(SysFileInfoMessage sysFileInfo);
 }
