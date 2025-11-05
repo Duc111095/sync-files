@@ -190,7 +190,7 @@ public class CopyFileService {
 				
 				if (checkSysFileInfoExistByControllerSysKeyTimeout(msgCopy, srcMapper, appConfig.getTimeout())) {
 					List<SysFileInfo> upList = destMapper.getSysFileInfosByControllerSysKeyMessage(msgCopy);
-					upList = upList == null ? new ArrayList<>() : upList;
+					upList = (upList == null) ? new ArrayList<>() : upList;
 					boolean updated = false;
 					List<SysFileInfo> sfiList = srcMapper.getSysFileInfosByControllerSysKeyMessage(msgCopy);
 					for (SysFileInfo sfi : sfiList) {
