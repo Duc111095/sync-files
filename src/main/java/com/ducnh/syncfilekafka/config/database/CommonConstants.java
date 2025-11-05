@@ -92,6 +92,8 @@ public class CommonConstants {
 	public static final String FILE_NOT_FOUND = "Error: Not exist file - SysFileInfo: %s";
 	public static final String NOT_FOUND_SOURCE_DATABASE = "Error: No source database extract from message";
 	public static final String SYSFILEINFO_EXISTED = "Error: Sysfileinfo existed: %s";
+	public static final String COPYFILE_SYSFILEINFO_EXISTED = "Copied file but Sysfileinfo existed: %s";
+
 	public static final String EMPTY_STRING = "";
 	public static final String NOT_FOUND_FILE_SOURCE = "Not found file in source path";
 	

@@ -1,10 +1,13 @@
  package com.ducnh.syncfilekafka.services;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
+import static com.hierynomus.msfscc.FileAttributes.FILE_ATTRIBUTE_DIRECTORY;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,26 +19,47 @@ import org.springframework.stereotype.Service;
 
 import com.ducnh.syncfilekafka.config.AppConfig;
 import com.ducnh.syncfilekafka.config.database.CommonConstants;
+import com.ducnh.syncfilekafka.config.database.properties.ServerFactory;
+import com.ducnh.syncfilekafka.config.database.properties.ServerProps;
 import com.ducnh.syncfilekafka.exception.SyncFileException;
 import com.ducnh.syncfilekafka.model.SysFileInfo;
 import com.ducnh.syncfilekafka.model.SysFileInfoMessage;
 import com.ducnh.syncfilekafka.repositories.mappers.DefaultMapper;
+import com.ducnh.syncfilekafka.utils.sqlBuilder.IOUtils;
+import com.hierynomus.msdtyp.AccessMask;
+import com.hierynomus.mssmb2.SMB2CreateDisposition;
+import com.hierynomus.mssmb2.SMB2ShareAccess;
+import com.hierynomus.mssmb2.SMBApiException;
+import com.hierynomus.protocol.commons.EnumWithValue;
+import com.hierynomus.smbj.SMBClient;
+import com.hierynomus.smbj.auth.AuthenticationContext;
+import com.hierynomus.smbj.connection.Connection;
+import com.hierynomus.smbj.io.InputStreamByteChunkProvider;
+import com.hierynomus.smbj.session.Session;
+import com.hierynomus.smbj.share.DiskShare;
+import com.hierynomus.smbj.share.File;
+
+import lombok.Data;
 
 @Service
 @Singleton
+@Data
 public class CopyFileService {
+
 	private static final Logger log = LoggerFactory.getLogger(CopyFileService.class);
 	private final Map<String, String> serverMap;
 	private final MapperService dsMapperService;
 	private final AppConfig appConfig;
 	private final ZulipService zulipService;
 	private final long[] sendErrorIds;
+	private final ServerFactory serverFactory;
 	
-	public CopyFileService(MapperService dsMapperService, AppConfig appConfig, ZulipService zulipService) {
+	public CopyFileService(MapperService dsMapperService, AppConfig appConfig, ZulipService zulipService, ServerFactory serverFactory) {
 		this.dsMapperService = dsMapperService;
 		this.zulipService = zulipService;
 		this.appConfig = appConfig;
 		this.sendErrorIds = this.appConfig.getSendErrorIdsArray();
+		this.serverFactory = serverFactory;
 		serverMap = new HashMap<>();
 		serverMap.put(CommonConstants.MA, appConfig.getMaPathFile());
 		serverMap.put(CommonConstants.MA_TEST, appConfig.getMaTestPathFile());
@@ -68,12 +92,14 @@ public class CopyFileService {
 			String srcDept = msgCopy.getDeptSrc().trim().toUpperCase();
 			String destDept = msgCopy.getDeptDest().trim().toUpperCase();
 			String fileName = msgCopy.getFileenc();
+			ServerProps srcProps = serverFactory.getServerProps(srcDept);
+			ServerProps destProps = serverFactory.getServerProps(destDept);
+
 			DefaultMapper srcMapper = dsMapperService.getMapper(srcDept);
 			DefaultMapper destMapper = dsMapperService.getMapper(destDept);
-			System.out.println(msgCopy);
 			if (operation.equalsIgnoreCase("delete")) {
 				try {
-					boolean deleted = deleteFile(fileName, destDept, msgCopy.getOptions());
+					boolean deleted = deleteFile(fileName, destDept, msgCopy.getOptions(), destProps);
 					if (deleted) {
 						// delete SysFileInfo
 						if (destMapper.checkExistSysFileInfoByMessage(msgCopy) != null) {
@@ -92,13 +118,13 @@ public class CopyFileService {
 					ntfMs = CommonConstants.ERROR_DELETE;
 				}
 			} else if (operation.equalsIgnoreCase("insert")) {
-				boolean fileSrcExisted = checkFileExistByTimeout(fileName, srcDept, appConfig.getTimeout());
-				System.out.println(fileSrcExisted);
+				boolean fileSrcExisted = checkFileExistByTimeout(fileName, srcDept, appConfig.getTimeout(), srcProps);
 				if (fileSrcExisted) {
-					boolean copied = copyFile(fileName, srcDept, destDept, msgCopy.getOptions());
+					boolean copied = copyFile(fileName, srcDept, destDept, msgCopy.getOptions(), srcProps, destProps);
 					if (copied) {
 						// insert SysFileInfo
-						if (checkSysFileExistByTimeout(msgCopy, srcMapper, appConfig.getTimeout())) {
+						if (checkSysFileInfoExistByTimeout(msgCopy, srcMapper, appConfig.getTimeout())) {
+							System.out.println("Check file info...");
 							SysFileInfo sysFileInfo = srcMapper.getSysFileInfoByMessage(msgCopy);
 							updateController(sysFileInfo);
 
@@ -160,26 +186,33 @@ public class CopyFileService {
 		}
 	}
 	
-	private boolean checkFileExistByTimeout(String fineenc, String src, int timeout) {
-		try {
-			Long start = System.currentTimeMillis();
-			String srcPath = serverMap.get(src) + File.separator + fineenc;
-			File srcf = new File(srcPath);
-			while (System.currentTimeMillis() - start < timeout * 1_000) {
-				if (srcf.exists()) {
-					return true;
-				}
-				Thread.sleep(1000);
-			}
-			return false;
-			
+	private boolean checkFileExistByTimeout(String fineenc, String src, int timeout, ServerProps srcProps) {
+		String srcPath = transformPath(serverMap.get(src) + java.io.File.separator + fineenc);
+		SMBClient client = new SMBClient();
+        try (Connection connection = client.connect(srcProps.getHost())) {	
+            AuthenticationContext ac = new AuthenticationContext(srcProps.getFsUs(), srcProps.getFsPw().toCharArray(), srcProps.getFsDm());
+            Session session = connection.authenticate(ac);
+            try (DiskShare share = (DiskShare) session.connectShare(srcProps.getConnectShare())) {
+        		Long start = System.currentTimeMillis();
+            	while (System.currentTimeMillis() - start < timeout * 1_000) {
+    				if (share.fileExists(srcPath)) {
+    					System.out.println("File existed: " + srcPath);
+    					return true;
+    				}
+    				Thread.sleep(1000);
+    			}
+    			return false;
+                
+            }				
 		} catch (Exception ex) {
 			throw new SyncFileException(ex);
-		}
+		} finally {
+			client.close();
+		}	
 	}
 	
 	
-	private boolean checkSysFileExistByTimeout(SysFileInfoMessage msg, DefaultMapper mapper, int timeout) {
+	private boolean checkSysFileInfoExistByTimeout(SysFileInfoMessage msg, DefaultMapper mapper, int timeout) {
 		try {
 			Long start = System.currentTimeMillis();
 			while (System.currentTimeMillis() - start < timeout * 1_000) {
@@ -194,36 +227,58 @@ public class CopyFileService {
 			throw new SyncFileException(ex);
 		}
 	}
-	
-	private boolean copyFile(String fileenc, String src, String dest, char options) {
-		try {
-			String srcPath = serverMap.get(src) + File.separator + fileenc;
-			String destPath = serverMap.get(dest) + File.separator + fileenc;
-			File srcf = new File(srcPath);
-			File destf = new File(destPath);
-			System.out.println(srcf);
-			if (!srcf.exists()) return false;
-			if (!destf.exists() || options == appConfig.getOverrideOptions()) {
-				Files.copy(srcf.toPath(), destf.toPath(), StandardCopyOption.REPLACE_EXISTING);
-				return true;  
-			}
-			return false; 
+		
+	private boolean copyFile(String fileenc, String src, String dest, char options, ServerProps srcProps, ServerProps destProps) {
+		String srcPath = serverMap.get(src) + java.io.File.separator + fileenc;
+		String destPath = serverMap.get(dest) + java.io.File.separator + fileenc;
+		SMBClient client = new SMBClient();
+        try (Connection srcConn = client.connect(srcProps.getHost());
+        	Connection destConn = client.connect(destProps.getHost())) {
+        	
+            AuthenticationContext srcAc = new AuthenticationContext(srcProps.getFsUs(), srcProps.getFsPw().toCharArray(), srcProps.getFsDm());
+            AuthenticationContext destAc = new AuthenticationContext(destProps.getFsUs(), destProps.getFsPw().toCharArray(), destProps.getFsDm());
+
+            Session srcSession = srcConn.authenticate(srcAc);
+            Session destSession = destConn.authenticate(destAc);
+            
+            try (DiskShare srcShare = (DiskShare) srcSession.connectShare(srcProps.getConnectShare());
+            	DiskShare destShare = (DiskShare) destSession.connectShare(destProps.getConnectShare())) {
+            	System.out.println("Src Share: " + srcShare + "- Dest Share: " + destShare);
+            	System.out.println(srcShare.fileExists(srcPath));
+                if (!srcShare.fileExists(srcPath)) return false;
+                if (!destShare.fileExists(destPath) ||  options == appConfig.getOverrideOptions()) {
+                	System.out.println("Copying...");
+                	copy(srcPath, destPath, srcShare, destShare);
+                	System.out.println("End of Copy...");
+    				return true;  
+                }
+                return false;
+            }				
 		} catch (Exception ex) {
 			throw new SyncFileException(ex);
+		} finally {
+			client.close();
 		}
 	}
 	
-	private boolean deleteFile(String fileenc, String dest, char options) {
-		try {
-			String destPath = serverMap.get(dest) + File.separator + fileenc;
-			File destf = new File(destPath);
-			if (destf.exists() && !destf.isDirectory()) {
-				Files.delete(destf.toPath());
-				return true;  
-			}
-			return false; 
+	private boolean deleteFile(String fileenc, String dest, char options, ServerProps destProps) {
+		String destPath = serverMap.get(dest) + java.io.File.separator + fileenc;
+		SMBClient client = new SMBClient();
+        try (Connection destConn = client.connect(destProps.getHost())) {	
+            AuthenticationContext ac = new AuthenticationContext(destProps.getFsUs(), destProps.getFsPw().toCharArray(), destProps.getFsDm());
+            Session destSession = destConn.authenticate(ac);
+            try (DiskShare destShare = (DiskShare) destSession.connectShare(destProps.getConnectShare())) {
+                if (destShare.fileExists(destPath) && !EnumWithValue.EnumUtils.isSet(destShare.getFileInformation(destPath).getBasicInformation().getFileAttributes(), FILE_ATTRIBUTE_DIRECTORY)) {
+                	destShare.rm(destPath);
+    				return true;  
+                }
+
+                return false;
+            }				
 		} catch (Exception ex) {
 			throw new SyncFileException(ex);
+		} finally {
+			client.close();
 		}
 	}
 	
@@ -234,5 +289,31 @@ public class CopyFileService {
 			}
 		}
 		return null;
+	}
+	
+	private void copy(String remoteSourcePath, String remoteDestinationPath, DiskShare srcDiskShare, DiskShare destDiskShare) {
+		try (InputStream stream = readBytes(transformPath(remoteSourcePath), srcDiskShare)) {
+			write(transformPath(remoteDestinationPath), stream, destDiskShare);
+		} catch (IOException | SMBApiException ex) {
+			log.error("Error while copy file {}", remoteSourcePath, ex);
+		}
+	}
+	
+	private void write(final String destPath, InputStream is, DiskShare destDiskShare) throws IOException, SMBApiException {
+		try (File file = destDiskShare.openFile(transformPath(destPath), EnumSet.of(AccessMask.GENERIC_WRITE), null, SMB2ShareAccess.ALL, SMB2CreateDisposition.FILE_OVERWRITE_IF, null)) {
+			file.write(new InputStreamByteChunkProvider(is));
+		}
+	}
+	
+	private String transformPath(String path) {
+		return path.replace("/", "\\");
+	}
+	
+	private InputStream readBytes(String srcPath, DiskShare srcDiskShare) throws IOException, SMBApiException {
+		ByteArrayInputStream byteStream;
+		try (File file = srcDiskShare.openFile(transformPath(srcPath), EnumSet.of(AccessMask.GENERIC_READ), null, SMB2ShareAccess.ALL, SMB2CreateDisposition.FILE_OPEN, null)) {
+			byteStream = new ByteArrayInputStream(IOUtils.getBytes(file.getInputStream()));
+		}
+		return byteStream;
 	}
 }

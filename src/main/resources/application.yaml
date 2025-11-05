@@ -4,6 +4,10 @@ spring:
 
 MICROSOFT_DB_USERNAME: sa
 MICROSOFT_DB_PASSWORD: 123456a@@
+FS_US: administrator
+FS_PW: Fbo@123
+FS_DM: MITALAB
+
 
 ds:
     ma:
@@ -14,6 +18,11 @@ ds:
         driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
         dialect: org.hibernate.dialect.SQLServer2012Dialect
         maximumPoolSize: 1
+        host: "192.168.100.53"
+        connectShare: "MinhAn"
+        fsUs: ${FS_US}
+        fsPw: ${FS_PW}
+        fsDM: ${FS_DM}
     maTest:
         name: MATestDataSource
         jdbcUrl: jdbc:sqlserver://192.168.100.53\sql2014;database=MinhAn_Test_App;encrypt=True;trustServerCertificate=True;
@@ -22,6 +31,11 @@ ds:
         driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
         dialect: org.hibernate.dialect.SQLServer2012Dialect
         maximumPoolSize: 1
+        host: "192.168.100.53"
+        connectShare: "MinhAn ERP"
+        fsUs: ${FS_US}
+        fsPw: ${FS_PW}
+        fsDM: ${FS_DM}
     na:
         name: NADataSource
         jdbcUrl: jdbc:sqlserver://192.168.60.17\sql2014;database=NhatAnh_App;encrypt=True;trustServerCertificate=True;
@@ -29,13 +43,23 @@ ds:
         password: ${MICROSOFT_DB_PASSWORD}
         driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
         dialect: org.hibernate.dialect.SQLServer2012Dialect
+        host: "192.168.60.17"
+        connectShare: "nhatanh"
+        fsUs: ${FS_US}
+        fsPw: ${FS_PW}
+        fsDM: ${FS_DM}
     np:
         name: NPDataSource
         jdbcUrl: jdbc:sqlserver://192.168.5.11\sql2014;database=NamPhuong_App;encrypt=True;trustServerCertificate=True;
         username: ${MICROSOFT_DB_USERNAME}
         password: ${MICROSOFT_DB_PASSWORD}
         driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
-        dialect: org.hibernate.dialect.SQLServer2012Dialect        
+        dialect: org.hibernate.dialect.SQLServer2012Dialect
+        host: "192.168.5.11"
+        connectShare: "NamPhuong"
+        fsUs: ${FS_US}
+        fsPw: ${FS_PW}
+        fsDM: ${FS_DM}     
     sk:
         name: SKDataSource
         jdbcUrl: jdbc:sqlserver://10.0.20.11\sql2014;database=SKMT_App;encrypt=True;trustServerCertificate=True;
@@ -43,6 +67,11 @@ ds:
         password: ${MICROSOFT_DB_PASSWORD}
         driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
         dialect: org.hibernate.dialect.SQLServer2012Dialect
+        host: "10.0.20.11"
+        connectShare: "skmt"
+        fsUs: ${FS_US}
+        fsPw: ${FS_PW}
+        fsDM: ${FS_DM}   
     tb:
         name: TBDataSource
         jdbcUrl: jdbc:sqlserver://192.168.100.51\sql2014;database=MinhTam_App;encrypt=True;trustServerCertificate=True;
@@ -50,6 +79,11 @@ ds:
         password: ${MICROSOFT_DB_PASSWORD}
         driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
         dialect: org.hibernate.dialect.SQLServer2012Dialect
+        host: "192.168.100.51"
+        connectShare: "minhtam"
+        fsUs: ${FS_US}
+        fsPw: ${FS_PW}
+        fsDM: ${FS_DM}   
     cnmt:
         name: CNMTDataSource
         jdbcUrl: jdbc:sqlserver://192.168.10.47\sql2014;database=MinhTamHCM_App;encrypt=True;trustServerCertificate=True;
@@ -57,6 +91,11 @@ ds:
         password: ${MICROSOFT_DB_PASSWORD}
         driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
         dialect: org.hibernate.dialect.SQLServer2012Dialect
+        host: "192.168.10.47"
+        connectShare: "minhtamhcm"
+        fsUs: ${FS_US}
+        fsPw: ${FS_PW} 
+        fsDM: ${FS_DM}  
     ha:
         name: HADataSource
         jdbcUrl: jdbc:sqlserver://192.168.60.16\sql2014;database=HongAnh_App;encrypt=True;trustServerCertificate=True;
@@ -64,6 +103,11 @@ ds:
         password: ${MICROSOFT_DB_PASSWORD}
         driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
         dialect: org.hibernate.dialect.SQLServer2012Dialect
+        host: "192.168.60.16"
+        connectShare: "HongAnh"
+        fsUs: ${FS_US}
+        fsPw: ${FS_PW}
+        fsDM: ${FS_DM}   
     hn:
         name: HNDataSource
         jdbcUrl: jdbc:sqlserver://192.168.60.18\sql2014;database=HaiNam_App;encrypt=True;trustServerCertificate=True;
@@ -71,6 +115,11 @@ ds:
         password: ${MICROSOFT_DB_PASSWORD}
         driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
         dialect: org.hibernate.dialect.SQLServer2012Dialect
+        host: "192.168.60.18"
+        connectShare: "HaiNam"
+        fsUs: ${FS_US}
+        fsPw: ${FS_PW}
+        fsDM: ${FS_DM}   
     th:
         name: THDataSource
         jdbcUrl: jdbc:sqlserver://192.168.60.12\sql2014;database=ThanhHa_App;encrypt=True;trustServerCertificate=True;
@@ -78,6 +127,11 @@ ds:
         password: ${MICROSOFT_DB_PASSWORD}
         driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
         dialect: org.hibernate.dialect.SQLServer2012Dialect
+        host: "192.168.60.12"
+        connectShare: "ThanhHa"
+        fsUs: ${FS_US}
+        fsPw: ${FS_PW}
+        fsDM: ${FS_DM}
     ctdm:
         name: CTDMDataSource
         jdbcUrl: jdbc:sqlserver://10.0.10.16\sql2014;database=DuyMinhHCM_App;encrypt=True;trustServerCertificate=True;
@@ -85,6 +139,11 @@ ds:
         password: ${MICROSOFT_DB_PASSWORD}
         driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
         dialect: org.hibernate.dialect.SQLServer2012Dialect
+        host: "10.0.10.16"
+        connectShare: "DuyMinhHCM"
+        fsUs: ${FS_US}
+        fsPw: ${FS_PW}
+        fsDM: ${FS_DM}
     lkdc:
         name: LKDCDataSource
         jdbcUrl: jdbc:sqlserver://192.168.60.15\sql2014;database=LKDC_App;encrypt=True;trustServerCertificate=True;
@@ -92,6 +151,11 @@ ds:
         password: ${MICROSOFT_DB_PASSWORD}
         driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
         dialect: org.hibernate.dialect.SQLServer2012Dialect
+        host: "192.168.60.15"
+        connectShare: "lkdc"
+        fsUs: ${FS_US}
+        fsPw: ${FS_PW}
+        fsDM: ${FS_DM}
 
 app:
     config:
@@ -100,18 +164,18 @@ app:
         ignoreStatus: '1'
         timeout: 30
         appendable: false
-        maPathFile: \\192.168.100.53\MinhAn\Upload\MinhAn_App
-        maTestPathFile: \\192.168.100.53\MinhAn ERP\Upload\MINHAN_Test_App
-        npPathFile: \\192.168.5.11\NamPhuong\Upload\NamPhuong_App
-        naPathFile: \\192.168.60.17\NHATANH\Upload\NhatAnh_App
-        skPathFile: \\10.0.20.11\SKMT\Upload\SKMT_App
-        tbPathFile: \\192.168.100.51\MINHTAM\Upload\MinhTam_App
-        cnmtPathFile: \\192.168.10.47\MINHTAMHCM\Upload\MINHTAMHCM_App
-        ctdmPathFile: \\10.0.10.16\DuyMinhHCM\Upload\DuyMinhHCM_App
-        thPathFile: \\192.168.60.12\ThanhHa\Upload\THANHHA_App
-        hnPathFile: \\192.168.60.18\HaiNam\Upload\HAINAM_App
-        haPathFile: \\192.168.60.16\HongAnh\Upload\HongAnh_App
-        lkdcPathFile: \\192.168.60.15\lkdc\Upload\LKDC_App
+        maPathFile: Upload\MinhAn_App
+        maTestPathFile: Upload\MINHAN_Test_App
+        npPathFile: Upload\NamPhuong_App
+        naPathFile: Upload\NhatAnh_App
+        skPathFile: Upload\SKMT_App
+        tbPathFile: Upload\MinhTam_App
+        cnmtPathFile: MINHTAMHCM_App
+        ctdmPathFile: Upload\DuyMinhHCM_App
+        thPathFile: Upload\THANHHA_App
+        hnPathFile: Upload\HAINAM_App
+        haPathFile: Upload\HongAnh_App
+        lkdcPathFile: Upload\LKDC_App
         sendErrorIds: 64
         logDebugged: false
         kafka:
