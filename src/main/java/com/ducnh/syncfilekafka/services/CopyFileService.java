@@ -192,10 +192,11 @@ public class CopyFileService {
 					List<SysFileInfo> upList = destMapper.getSysFileInfosByControllerSysKeyMessage(msgCopy);
 					upList = (upList == null) ? new ArrayList<>() : upList;
 					boolean updated = false;
+					boolean copied = false;
 					List<SysFileInfo> sfiList = srcMapper.getSysFileInfosByControllerSysKeyMessage(msgCopy);
 					for (SysFileInfo sfi : sfiList) {
 						fileName = sfi.getFileenc();
-						boolean copied = copyFile(fileName, srcDept, destDept, msgCopy.getOptions(), srcProps, destProps);
+						copied = copyFile(fileName, srcDept, destDept, msgCopy.getOptions(), srcProps, destProps);
 						if (copied) {
 							updateController(sfi);
 							if (!checkFileEncInList(fileName, upList)) {
@@ -212,6 +213,10 @@ public class CopyFileService {
 						ntfMs = CommonConstants.SYNC_SUCCESS;
 					} else {
 						ntfMs = CommonConstants.SYSFILEINFO_EXISTED;
+					}
+					
+					if (!copied) {
+						ntfMs = CommonConstants.FILE_EXISTED;
 					}
 				} else {
 					ntfMs = CommonConstants.SYSFILEINFO_NOT_FOUND;	
