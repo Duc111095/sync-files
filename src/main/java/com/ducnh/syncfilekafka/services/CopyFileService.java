@@ -189,6 +189,7 @@ public class CopyFileService {
 	private boolean checkFileExistByTimeout(String fineenc, String src, int timeout, ServerProps srcProps) {
 		String srcPath = transformPath(serverMap.get(src) + java.io.File.separator + fineenc);
 		SMBClient client = new SMBClient();
+		System.out.println("Check file exists");
         try (Connection connection = client.connect(srcProps.getHost())) {	
             AuthenticationContext ac = new AuthenticationContext(srcProps.getFsUs(), srcProps.getFsPw().toCharArray(), srcProps.getFsDm());
             Session session = connection.authenticate(ac);
@@ -201,6 +202,7 @@ public class CopyFileService {
     				}
     				Thread.sleep(1000);
     			}
+        		System.out.println("File don't exist");
     			return false;
                 
             }				
