@@ -179,7 +179,9 @@ public class CopyFileService {
 	
 	private void updateController(SysFileInfo src) {
 		for (Map.Entry<String, String> m : appConfig.getReplaceController().entrySet()) {
-			if (src.getController().equalsIgnoreCase(m.getKey())) {
+			System.out.println(m.getKey());
+			System.out.println(src.getController());
+			if (src.getController().trim().equalsIgnoreCase(m.getKey())) {
 				src.setController(m.getValue());
 				break;
 			}
