@@ -1,4 +1,4 @@
- package com.ducnh.syncfilekafka.services;
+package com.ducnh.syncfilekafka.services;
 
 import static com.hierynomus.msfscc.FileAttributes.FILE_ATTRIBUTE_DIRECTORY;
 
@@ -102,6 +102,7 @@ public class CopyFileService {
 					boolean deleted = deleteFile(fileName, destDept, msgCopy.getOptions(), destProps);
 					if (deleted) {
 						// delete SysFileInfo
+						updateControllerMessage(msgCopy);
 						if (destMapper.checkExistSysFileInfoByMessage(msgCopy) != null) {
 							destMapper.deleteSysFileInfo(msgCopy);
 						}
@@ -124,7 +125,6 @@ public class CopyFileService {
 					if (copied) {
 						// insert SysFileInfo
 						if (checkSysFileInfoExistByTimeout(msgCopy, srcMapper, appConfig.getTimeout())) {
-							System.out.println("Check file info...");
 							SysFileInfo sysFileInfo = srcMapper.getSysFileInfoByMessage(msgCopy);
 							updateController(sysFileInfo);
 
@@ -179,8 +179,6 @@ public class CopyFileService {
 	
 	private void updateController(SysFileInfo src) {
 		for (Map.Entry<String, String> m : appConfig.getReplaceController().entrySet()) {
-			System.out.println(m.getKey());
-			System.out.println(src.getController());
 			if (src.getController().trim().equalsIgnoreCase(m.getKey())) {
 				src.setController(m.getValue());
 				break;
@@ -188,10 +186,20 @@ public class CopyFileService {
 		}
 	}
 	
+	private void updateControllerMessage(SysFileInfoMessage msgCopy) {
+		for (Map.Entry<String, String> m : appConfig.getReplaceController().entrySet()) {
+			if (msgCopy.getController().trim().equalsIgnoreCase(m.getKey())) {
+				msgCopy.setController(m.getValue());
+				break;
+			}
+		}
+	}
+	
+
+	
 	private boolean checkFileExistByTimeout(String fineenc, String src, int timeout, ServerProps srcProps) {
 		String srcPath = transformPath(serverMap.get(src) + java.io.File.separator + fineenc);
 		SMBClient client = new SMBClient();
-		System.out.println("Check file exists");
         try (Connection connection = client.connect(srcProps.getHost())) {	
             AuthenticationContext ac = new AuthenticationContext(srcProps.getFsUs(), srcProps.getFsPw().toCharArray(), srcProps.getFsDm());
             Session session = connection.authenticate(ac);
@@ -199,12 +207,10 @@ public class CopyFileService {
         		Long start = System.currentTimeMillis();
             	while (System.currentTimeMillis() - start < timeout * 1_000) {
     				if (share.fileExists(srcPath)) {
-    					System.out.println("File existed: " + srcPath);
     					return true;
     				}
     				Thread.sleep(1000);
     			}
-        		System.out.println("File don't exist");
     			return false;
                 
             }				
@@ -247,13 +253,9 @@ public class CopyFileService {
             
             try (DiskShare srcShare = (DiskShare) srcSession.connectShare(srcProps.getConnectShare());
             	DiskShare destShare = (DiskShare) destSession.connectShare(destProps.getConnectShare())) {
-            	System.out.println("Src Share: " + srcShare + "- Dest Share: " + destShare);
-            	System.out.println(srcShare.fileExists(srcPath));
                 if (!srcShare.fileExists(srcPath)) return false;
                 if (!destShare.fileExists(destPath) ||  options == appConfig.getOverrideOptions()) {
-                	System.out.println("Copying...");
                 	copy(srcPath, destPath, srcShare, destShare);
-                	System.out.println("End of Copy...");
     				return true;  
                 }
                 return false;
