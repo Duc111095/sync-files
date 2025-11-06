@@ -322,6 +322,7 @@ public class CopyFileService {
 	
 	
 	private boolean checkSysFileInfoExistByControllerSysKeyTimeout(SysFileInfoMessage msg, DefaultMapper mapper, int timeout) {
+		System.out.println("SysFileInfo checking...");
 		try {
 			Long start = System.currentTimeMillis();
 			while (System.currentTimeMillis() - start < timeout * 1_000) {
@@ -368,6 +369,8 @@ public class CopyFileService {
             
             try (DiskShare srcShare = (DiskShare) srcSession.connectShare(srcProps.getConnectShare());
             	DiskShare destShare = (DiskShare) destSession.connectShare(destProps.getConnectShare())) {
+            	System.out.println("Source Share: " + srcShare);
+            	System.out.println("Dest Share: " + destShare);
                 if (!srcShare.fileExists(srcPath)) return false;
                 if (!destShare.fileExists(destPath) ||  options == appConfig.getOverrideOptions()) {
                 	copy(srcPath, destPath, srcShare, destShare);
@@ -389,6 +392,7 @@ public class CopyFileService {
             AuthenticationContext ac = new AuthenticationContext(destProps.getFsUs(), destProps.getFsPw().toCharArray(), destProps.getFsDm());
             Session destSession = destConn.authenticate(ac);
             try (DiskShare destShare = (DiskShare) destSession.connectShare(destProps.getConnectShare())) {
+            	System.out.println("Dest Share: " + destShare);
                 if (destShare.fileExists(destPath) && !EnumWithValue.EnumUtils.isSet(destShare.getFileInformation(destPath).getBasicInformation().getFileAttributes(), FILE_ATTRIBUTE_DIRECTORY)) {
                 	destShare.rm(destPath);
     				return true;  
