@@ -322,7 +322,6 @@ public class CopyFileService {
 	
 	
 	private boolean checkSysFileInfoExistByControllerSysKeyTimeout(SysFileInfoMessage msg, DefaultMapper mapper, int timeout) {
-		System.out.println("SysFileInfo checking...");
 		try {
 			Long start = System.currentTimeMillis();
 			while (System.currentTimeMillis() - start < timeout * 1_000) {
@@ -369,8 +368,6 @@ public class CopyFileService {
             
             try (DiskShare srcShare = (DiskShare) srcSession.connectShare(srcProps.getConnectShare());
             	DiskShare destShare = (DiskShare) destSession.connectShare(destProps.getConnectShare())) {
-            	System.out.println("Source Share: " + srcShare);
-            	System.out.println("Dest Share: " + destShare);
                 if (!srcShare.fileExists(srcPath)) return false;
                 if (!destShare.fileExists(destPath) ||  options == appConfig.getOverrideOptions()) {
                 	copy(srcPath, destPath, srcShare, destShare);
