@@ -23,14 +23,4 @@ public class SysFileInfo {
 	public SysFileInfo() {
 		
 	}
-	
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("SysFileInfo[").append("controller=").append(controller).append(",");
-		sb.append("sysKey=").append(sysKey).append(",").append("linenbr=").append(linenbr).append(",");
-		sb.append("filename=").append(filename).append(",").append("fileext=").append(fileext).append(",");
-		sb.append("fileenc=").append(fileenc).append("]");
-		return sb.toString();
-	}
 }

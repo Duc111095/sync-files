@@ -3,6 +3,7 @@ package com.ducnh.syncfilekafka.config.kafka.serializer;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -41,7 +42,7 @@ public class SysFileInfoMessageDeserializer implements Deserializer<SysFileInfoM
 			SysFileInfoMessage beforeMessage = new SysFileInfoMessage();
 			SysFileInfoMessage afterMessage = new SysFileInfoMessage();
 			try {
-			    JSONObject rawMsg = new JSONObject(new String(data, "utf-8"));
+			    JSONObject rawMsg = new JSONObject(new String(data, StandardCharsets.UTF_8));
 			    JSONArray fields = rawMsg.getJSONObject("schema").getJSONArray("fields");
 			    JSONArray beforeFields = null;
 			    JSONArray afterFields = null;
@@ -56,9 +57,6 @@ public class SysFileInfoMessageDeserializer implements Deserializer<SysFileInfoM
 			    List<KafkaType> beforeType = getTypes(beforeFields);
 			    List<KafkaType> afterType = getTypes(afterFields);
 			    
-			    //beforeMessage = updateGeneralInformation(rawMsg, beforeMessage);
-			    //afterMessage = updateGeneralInformation(rawMsg, afterMessage);
-
 			    try {
 			    	 JSONObject before = rawMsg.getJSONObject("payload").getJSONObject("before");
 				     JSONObject fixedBefore = new JSONObject();
@@ -181,8 +179,7 @@ public class SysFileInfoMessageDeserializer implements Deserializer<SysFileInfoM
 	
 	
 	@SuppressWarnings("unused")
-	private SysFileInfoMessage updateGeneralInformation(JSONObject rawMsg, SysFileInfoMessage message) throws JSONException {
-		SysFileInfoMessage updatedMessage = message;
+	private void updateGeneralInformation(JSONObject rawMsg, SysFileInfoMessage message) throws JSONException {
 		JSONObject payload = rawMsg.getJSONObject("payload");
 		String op = payload.getString("op");
 		JSONObject source = payload.getJSONObject("source");
@@ -190,13 +187,11 @@ public class SysFileInfoMessageDeserializer implements Deserializer<SysFileInfoM
 		String db = source.getString("db");
 		String schema = source.getString("schema");
 		String table = source.getString("table");
-		updatedMessage.setOp(op);
-		updatedMessage.setSourceDb(db);
-		updatedMessage.setSourceName(name);
-		updatedMessage.setSourceSchema(schema);
-		updatedMessage.setSourceTable(table);
-		return updatedMessage;
-		
+		message.setOp(op);
+		message.setSourceDb(db);
+		message.setSourceName(name);
+		message.setSourceSchema(schema);
+		message.setSourceTable(table);
 	}
 	
 	private void insertGeneralInformation(JSONObject rawMsg, JSONObject updateObject) throws JSONException {
@@ -220,7 +215,7 @@ public class SysFileInfoMessageDeserializer implements Deserializer<SysFileInfoM
 	
 	@Data
 	@RequiredArgsConstructor
-	public class KafkaType {
+	public static class KafkaType {
 		private String field;
 		private String name;
 		private Boolean optional;
@@ -247,7 +242,7 @@ public class SysFileInfoMessageDeserializer implements Deserializer<SysFileInfoM
 	@Data
 	@RequiredArgsConstructor
 	@AllArgsConstructor
-	private class ObjectWrapper {
+	private static class ObjectWrapper {
 		private Object value;
 		private Class<?> clazz;
 		

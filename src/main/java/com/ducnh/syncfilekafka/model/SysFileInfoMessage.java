@@ -56,7 +56,7 @@ public class SysFileInfoMessage {
 	public SysFileInfoMessage() {
 		
 	}
-	
+
 	public SysFileInfoMessage getDeepCopyMessage() {
 		SysFileInfoMessage newMessage = new SysFileInfoMessage();
 		newMessage.setId(getId());
@@ -88,29 +88,5 @@ public class SysFileInfoMessage {
 		newMessage.setSourceTable(getSourceTable());
 		return newMessage;
 	}
-	
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("SysFileInfoMessage[").append("id=").append(id).append(",").append("controller=").append(controller).append(",");
-		sb.append("sysKey=").append(sysKey).append(",").append("linenbr=").append(linenbr).append(",");
-		sb.append("filename=").append(filename).append(",").append("fileext=").append(fileext).append(",");
-		sb.append("fileenc=").append(fileenc).append(",");
-		sb.append("deptSrc=").append(deptSrc).append(",");
-		sb.append("deptDest=").append(deptDest).append(",");
-		sb.append("options=").append(options).append(",");
-		sb.append("operation=").append(operation).append(",");
-		sb.append("datetime0=").append(datetime0).append(",");
-		sb.append("datetime2=").append(datetime2).append(",");
-		sb.append("createDate=").append(createDate).append(",");
-		sb.append("updateDate=").append(updateDate).append(",");
-		sb.append("errMsg=").append(errMsg).append(",");
-		sb.append("op=").append(op).append(",");
-		sb.append("sourceName=").append(sourceName).append(",");
-		sb.append("sourceDb=").append(sourceDb).append(",");
-		sb.append("sourceSchema=").append(sourceSchema).append(",");
-		sb.append("sourceTable=").append(sourceTable).append(",");
-		sb.append("status=").append(status).append("]");		
-		return sb.toString();
-	}
+
 }

@@ -25,19 +25,21 @@ import com.ducnh.syncfilekafka.repositories.mappers.impl.SkMapper;
 import com.ducnh.syncfilekafka.repositories.mappers.impl.TbMapper;
 import com.ducnh.syncfilekafka.repositories.mappers.impl.ThMapper;
 
+import static com.ducnh.syncfilekafka.config.database.CommonConstants.*;
+
 @Configuration
 public class MaDataSourceConfiguration {
 	
-	@Bean(name = CommonConstants.MA_DATASOURCE, destroyMethod = "")
-	@ConfigurationProperties(prefix = CommonConstants.MA_DATASOURCE_PREFIX)
+	@Bean(name = MA_DATASOURCE, destroyMethod = "")
+	@ConfigurationProperties(prefix = MA_DATASOURCE_PREFIX)
 	@Primary
 	public DataSource dataSourceMa() {
 		return DataSourceBuilder.create().build();
 	}
 	
-	@Bean(name = CommonConstants.MA_SESSION_FACTORY, destroyMethod = "")
+	@Bean(name = MA_SESSION_FACTORY, destroyMethod = "")
 	@Primary
-	public SqlSessionFactoryBean sqlSessionFactoryMa(@Named(CommonConstants.MA_DATASOURCE) final DataSource maDataSource) throws Exception {
+	public SqlSessionFactoryBean sqlSessionFactoryMa(@Named(MA_DATASOURCE) final DataSource maDataSource) throws Exception {
 		final SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 		sqlSessionFactoryBean.setDataSource(maDataSource);
 		SqlSessionFactory sqlSessionFactory = sqlSessionFactoryBean.getObject();
@@ -47,20 +49,20 @@ public class MaDataSourceConfiguration {
 	
 	@Bean
 	@Primary
-	public MapperFactoryBean<MaMapper> etrMapperMa(@Named(CommonConstants.MA_SESSION_FACTORY) final SqlSessionFactoryBean maSqlSessionFactoryBean) throws Exception {
+	public MapperFactoryBean<MaMapper> etrMapperMa(@Named(MA_SESSION_FACTORY) final SqlSessionFactoryBean maSqlSessionFactoryBean) throws Exception {
 		MapperFactoryBean<MaMapper> factoryBean = new MapperFactoryBean<>(MaMapper.class);
 		factoryBean.setSqlSessionFactory(maSqlSessionFactoryBean.getObject());
 		return factoryBean;
 	}
 	
-	@Bean(name = CommonConstants.MA_TEST_DATASOURCE, destroyMethod = "")
-	@ConfigurationProperties(prefix = CommonConstants.MA_TEST_DATASOURCE_PREFIX)
+	@Bean(name = MA_TEST_DATASOURCE, destroyMethod = "")
+	@ConfigurationProperties(prefix = MA_TEST_DATASOURCE_PREFIX)
 	public DataSource dataSourceMaTest() {
 		return DataSourceBuilder.create().build();
 	}
 	
-	@Bean(name = CommonConstants.MA_TEST_SESSION_FACTORY, destroyMethod = "")
-	public SqlSessionFactoryBean sqlSessionFactoryMaTest(@Named(CommonConstants.MA_TEST_DATASOURCE) final DataSource dataSource) throws Exception {
+	@Bean(name = MA_TEST_SESSION_FACTORY, destroyMethod = "")
+	public SqlSessionFactoryBean sqlSessionFactoryMaTest(@Named(MA_TEST_DATASOURCE) final DataSource dataSource) throws Exception {
 		final SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 		sqlSessionFactoryBean.setDataSource(dataSource);
 		SqlSessionFactory sqlSessionFactory = sqlSessionFactoryBean.getObject();
@@ -69,20 +71,20 @@ public class MaDataSourceConfiguration {
 	}
 	
 	@Bean
-	public MapperFactoryBean<MaTestMapper> etrMapperMaTest(@Named(CommonConstants.MA_TEST_SESSION_FACTORY) final SqlSessionFactoryBean maSqlSessionFactoryBean) throws Exception {
+	public MapperFactoryBean<MaTestMapper> etrMapperMaTest(@Named(MA_TEST_SESSION_FACTORY) final SqlSessionFactoryBean maSqlSessionFactoryBean) throws Exception {
 		MapperFactoryBean<MaTestMapper> factoryBean = new MapperFactoryBean<>(MaTestMapper.class);
 		factoryBean.setSqlSessionFactory(maSqlSessionFactoryBean.getObject());
 		return factoryBean;
 	}
 	
-	@Bean(name = CommonConstants.NP_DATASOURCE, destroyMethod = "")
-	@ConfigurationProperties(prefix = CommonConstants.NP_DATASOURCE_PREFIX)
+	@Bean(name = NP_DATASOURCE, destroyMethod = "")
+	@ConfigurationProperties(prefix = NP_DATASOURCE_PREFIX)
 	public DataSource dataSourceNp() {
 		return DataSourceBuilder.create().build();
 	}
 	
-	@Bean(name = CommonConstants.NP_SESSION_FACTORY, destroyMethod = "")
-	public SqlSessionFactoryBean sqlSessionFactoryNp(@Named(CommonConstants.NP_DATASOURCE) final DataSource dataSource) throws Exception {
+	@Bean(name = NP_SESSION_FACTORY, destroyMethod = "")
+	public SqlSessionFactoryBean sqlSessionFactoryNp(@Named(NP_DATASOURCE) final DataSource dataSource) throws Exception {
 		final SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 		sqlSessionFactoryBean.setDataSource(dataSource);
 		SqlSessionFactory sqlSessionFactory = sqlSessionFactoryBean.getObject();
@@ -91,20 +93,20 @@ public class MaDataSourceConfiguration {
 	}
 	
 	@Bean
-	public MapperFactoryBean<NpMapper> etrMapperNp(@Named(CommonConstants.NP_SESSION_FACTORY) final SqlSessionFactoryBean maSqlSessionFactoryBean) throws Exception {
+	public MapperFactoryBean<NpMapper> etrMapperNp(@Named(NP_SESSION_FACTORY) final SqlSessionFactoryBean maSqlSessionFactoryBean) throws Exception {
 		MapperFactoryBean<NpMapper> factoryBean = new MapperFactoryBean<>(NpMapper.class);
 		factoryBean.setSqlSessionFactory(maSqlSessionFactoryBean.getObject());
 		return factoryBean;
 	}
 	
-	@Bean(name = CommonConstants.NA_DATASOURCE, destroyMethod = "")
-	@ConfigurationProperties(prefix = CommonConstants.NA_DATASOURCE_PREFIX)
+	@Bean(name = NA_DATASOURCE, destroyMethod = "")
+	@ConfigurationProperties(prefix = NA_DATASOURCE_PREFIX)
 	public DataSource dataSourceNa() {
 		return DataSourceBuilder.create().build();
 	}
 	
-	@Bean(name = CommonConstants.NA_SESSION_FACTORY, destroyMethod = "")
-	public SqlSessionFactoryBean sqlSessionFactoryNa(@Named(CommonConstants.NA_DATASOURCE) final DataSource dataSource) throws Exception {
+	@Bean(name = NA_SESSION_FACTORY, destroyMethod = "")
+	public SqlSessionFactoryBean sqlSessionFactoryNa(@Named(NA_DATASOURCE) final DataSource dataSource) throws Exception {
 		final SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 		sqlSessionFactoryBean.setDataSource(dataSource);
 		SqlSessionFactory sqlSessionFactory = sqlSessionFactoryBean.getObject();
@@ -113,20 +115,20 @@ public class MaDataSourceConfiguration {
 	}
 	
 	@Bean
-	public MapperFactoryBean<NaMapper> etrMapperNa(@Named(CommonConstants.NA_SESSION_FACTORY) final SqlSessionFactoryBean maSqlSessionFactoryBean) throws Exception {
+	public MapperFactoryBean<NaMapper> etrMapperNa(@Named(NA_SESSION_FACTORY) final SqlSessionFactoryBean maSqlSessionFactoryBean) throws Exception {
 		MapperFactoryBean<NaMapper> factoryBean = new MapperFactoryBean<>(NaMapper.class);
 		factoryBean.setSqlSessionFactory(maSqlSessionFactoryBean.getObject());
 		return factoryBean;
 	}
 	
-	@Bean(name = CommonConstants.SK_DATASOURCE, destroyMethod = "")
-	@ConfigurationProperties(prefix = CommonConstants.SK_DATASOURCE_PREFIX)
+	@Bean(name = SK_DATASOURCE, destroyMethod = "")
+	@ConfigurationProperties(prefix = SK_DATASOURCE_PREFIX)
 	public DataSource dataSourceSk() {
 		return DataSourceBuilder.create().build();
 	}
 	
-	@Bean(name = CommonConstants.SK_SESSION_FACTORY, destroyMethod = "")
-	public SqlSessionFactoryBean sqlSessionFactorySk(@Named(CommonConstants.SK_DATASOURCE) final DataSource dataSource) throws Exception {
+	@Bean(name = SK_SESSION_FACTORY, destroyMethod = "")
+	public SqlSessionFactoryBean sqlSessionFactorySk(@Named(SK_DATASOURCE) final DataSource dataSource) throws Exception {
 		final SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 		sqlSessionFactoryBean.setDataSource(dataSource);
 		SqlSessionFactory sqlSessionFactory = sqlSessionFactoryBean.getObject();
@@ -135,20 +137,20 @@ public class MaDataSourceConfiguration {
 	}
 	
 	@Bean
-	public MapperFactoryBean<SkMapper> etrMapperSk(@Named(CommonConstants.SK_SESSION_FACTORY) final SqlSessionFactoryBean maSqlSessionFactoryBean) throws Exception {
+	public MapperFactoryBean<SkMapper> etrMapperSk(@Named(SK_SESSION_FACTORY) final SqlSessionFactoryBean maSqlSessionFactoryBean) throws Exception {
 		MapperFactoryBean<SkMapper> factoryBean = new MapperFactoryBean<>(SkMapper.class);
 		factoryBean.setSqlSessionFactory(maSqlSessionFactoryBean.getObject());
 		return factoryBean;
 	}
 	
-	@Bean(name = CommonConstants.TB_DATASOURCE, destroyMethod = "")
-	@ConfigurationProperties(prefix = CommonConstants.TB_DATASOURCE_PREFIX)
+	@Bean(name = TB_DATASOURCE, destroyMethod = "")
+	@ConfigurationProperties(prefix = TB_DATASOURCE_PREFIX)
 	public DataSource dataSourceTb() {
 		return DataSourceBuilder.create().build();
 	}
 	
-	@Bean(name = CommonConstants.TB_SESSION_FACTORY, destroyMethod = "")
-	public SqlSessionFactoryBean sqlSessionFactoryTb(@Named(CommonConstants.TB_DATASOURCE) final DataSource dataSource) throws Exception {
+	@Bean(name = TB_SESSION_FACTORY, destroyMethod = "")
+	public SqlSessionFactoryBean sqlSessionFactoryTb(@Named(TB_DATASOURCE) final DataSource dataSource) throws Exception {
 		final SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 		sqlSessionFactoryBean.setDataSource(dataSource);
 		SqlSessionFactory sqlSessionFactory = sqlSessionFactoryBean.getObject();
@@ -157,20 +159,20 @@ public class MaDataSourceConfiguration {
 	}
 	
 	@Bean
-	public MapperFactoryBean<TbMapper> etrMapperTb(@Named(CommonConstants.TB_SESSION_FACTORY) final SqlSessionFactoryBean maSqlSessionFactoryBean) throws Exception {
+	public MapperFactoryBean<TbMapper> etrMapperTb(@Named(TB_SESSION_FACTORY) final SqlSessionFactoryBean maSqlSessionFactoryBean) throws Exception {
 		MapperFactoryBean<TbMapper> factoryBean = new MapperFactoryBean<>(TbMapper.class);
 		factoryBean.setSqlSessionFactory(maSqlSessionFactoryBean.getObject());
 		return factoryBean;
 	}
 	
-	@Bean(name = CommonConstants.CNMT_DATASOURCE, destroyMethod = "")
-	@ConfigurationProperties(prefix = CommonConstants.CNMT_DATASOURCE_PREFIX)
+	@Bean(name = CNMT_DATASOURCE, destroyMethod = "")
+	@ConfigurationProperties(prefix = CNMT_DATASOURCE_PREFIX)
 	public DataSource dataSourceCnmt() {
 		return DataSourceBuilder.create().build();
 	}
 	
-	@Bean(name = CommonConstants.CNMT_SESSION_FACTORY, destroyMethod = "")
-	public SqlSessionFactoryBean sqlSessionFactoryCnmt(@Named(CommonConstants.CNMT_DATASOURCE) final DataSource dataSource) throws Exception {
+	@Bean(name = CNMT_SESSION_FACTORY, destroyMethod = "")
+	public SqlSessionFactoryBean sqlSessionFactoryCnmt(@Named(CNMT_DATASOURCE) final DataSource dataSource) throws Exception {
 		final SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 		sqlSessionFactoryBean.setDataSource(dataSource);
 		SqlSessionFactory sqlSessionFactory = sqlSessionFactoryBean.getObject();
@@ -179,20 +181,20 @@ public class MaDataSourceConfiguration {
 	}
 	
 	@Bean
-	public MapperFactoryBean<CnmtMapper> etrMapperCnmt(@Named(CommonConstants.CNMT_SESSION_FACTORY) final SqlSessionFactoryBean maSqlSessionFactoryBean) throws Exception {
+	public MapperFactoryBean<CnmtMapper> etrMapperCnmt(@Named(CNMT_SESSION_FACTORY) final SqlSessionFactoryBean maSqlSessionFactoryBean) throws Exception {
 		MapperFactoryBean<CnmtMapper> factoryBean = new MapperFactoryBean<>(CnmtMapper.class);
 		factoryBean.setSqlSessionFactory(maSqlSessionFactoryBean.getObject());
 		return factoryBean;
 	}
 	
-	@Bean(name = CommonConstants.CTDM_DATASOURCE, destroyMethod = "")
-	@ConfigurationProperties(prefix = CommonConstants.CTDM_DATASOURCE_PREFIX)
+	@Bean(name = CTDM_DATASOURCE, destroyMethod = "")
+	@ConfigurationProperties(prefix = CTDM_DATASOURCE_PREFIX)
 	public DataSource dataSourceCtdm() {
 		return DataSourceBuilder.create().build();
 	}
 	
-	@Bean(name = CommonConstants.CTDM_SESSION_FACTORY, destroyMethod = "")
-	public SqlSessionFactoryBean sqlSessionFactoryCtdm(@Named(CommonConstants.CTDM_DATASOURCE) final DataSource dataSource) throws Exception {
+	@Bean(name = CTDM_SESSION_FACTORY, destroyMethod = "")
+	public SqlSessionFactoryBean sqlSessionFactoryCtdm(@Named(CTDM_DATASOURCE) final DataSource dataSource) throws Exception {
 		final SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 		sqlSessionFactoryBean.setDataSource(dataSource);
 		SqlSessionFactory sqlSessionFactory = sqlSessionFactoryBean.getObject();
@@ -201,20 +203,20 @@ public class MaDataSourceConfiguration {
 	}
 	
 	@Bean
-	public MapperFactoryBean<CtdmMapper> etrMapperCtdm(@Named(CommonConstants.CTDM_SESSION_FACTORY) final SqlSessionFactoryBean maSqlSessionFactoryBean) throws Exception {
+	public MapperFactoryBean<CtdmMapper> etrMapperCtdm(@Named(CTDM_SESSION_FACTORY) final SqlSessionFactoryBean maSqlSessionFactoryBean) throws Exception {
 		MapperFactoryBean<CtdmMapper> factoryBean = new MapperFactoryBean<>(CtdmMapper.class);
 		factoryBean.setSqlSessionFactory(maSqlSessionFactoryBean.getObject());
 		return factoryBean;
 	}
 	
-	@Bean(name = CommonConstants.HA_DATASOURCE, destroyMethod = "")
-	@ConfigurationProperties(prefix = CommonConstants.HA_DATASOURCE_PREFIX)
+	@Bean(name = HA_DATASOURCE, destroyMethod = "")
+	@ConfigurationProperties(prefix = HA_DATASOURCE_PREFIX)
 	public DataSource dataSourceHa() {
 		return DataSourceBuilder.create().build();
 	}
 	
-	@Bean(name = CommonConstants.HA_SESSION_FACTORY, destroyMethod = "")
-	public SqlSessionFactoryBean sqlSessionFactoryHa(@Named(CommonConstants.HA_DATASOURCE) final DataSource dataSource) throws Exception {
+	@Bean(name = HA_SESSION_FACTORY, destroyMethod = "")
+	public SqlSessionFactoryBean sqlSessionFactoryHa(@Named(HA_DATASOURCE) final DataSource dataSource) throws Exception {
 		final SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 		sqlSessionFactoryBean.setDataSource(dataSource);
 		SqlSessionFactory sqlSessionFactory = sqlSessionFactoryBean.getObject();
@@ -223,20 +225,20 @@ public class MaDataSourceConfiguration {
 	}
 	
 	@Bean
-	public MapperFactoryBean<HaMapper> etrMapperHa(@Named(CommonConstants.HA_SESSION_FACTORY) final SqlSessionFactoryBean maSqlSessionFactoryBean) throws Exception {
+	public MapperFactoryBean<HaMapper> etrMapperHa(@Named(HA_SESSION_FACTORY) final SqlSessionFactoryBean maSqlSessionFactoryBean) throws Exception {
 		MapperFactoryBean<HaMapper> factoryBean = new MapperFactoryBean<>(HaMapper.class);
 		factoryBean.setSqlSessionFactory(maSqlSessionFactoryBean.getObject());
 		return factoryBean;
 	}
 	
-	@Bean(name = CommonConstants.HN_DATASOURCE, destroyMethod = "")
-	@ConfigurationProperties(prefix = CommonConstants.HN_DATASOURCE_PREFIX)
+	@Bean(name = HN_DATASOURCE, destroyMethod = "")
+	@ConfigurationProperties(prefix = HN_DATASOURCE_PREFIX)
 	public DataSource dataSourceHn() {
 		return DataSourceBuilder.create().build();
 	}
 	
-	@Bean(name = CommonConstants.HN_SESSION_FACTORY, destroyMethod = "")
-	public SqlSessionFactoryBean sqlSessionFactoryHn(@Named(CommonConstants.HN_DATASOURCE) final DataSource dataSource) throws Exception {
+	@Bean(name = HN_SESSION_FACTORY, destroyMethod = "")
+	public SqlSessionFactoryBean sqlSessionFactoryHn(@Named(HN_DATASOURCE) final DataSource dataSource) throws Exception {
 		final SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 		sqlSessionFactoryBean.setDataSource(dataSource);
 		SqlSessionFactory sqlSessionFactory = sqlSessionFactoryBean.getObject();
@@ -245,21 +247,21 @@ public class MaDataSourceConfiguration {
 	}
 	
 	@Bean
-	public MapperFactoryBean<HnMapper> etrMapperHn(@Named(CommonConstants.HN_SESSION_FACTORY) final SqlSessionFactoryBean maSqlSessionFactoryBean) throws Exception {
+	public MapperFactoryBean<HnMapper> etrMapperHn(@Named(HN_SESSION_FACTORY) final SqlSessionFactoryBean maSqlSessionFactoryBean) throws Exception {
 		MapperFactoryBean<HnMapper> factoryBean = new MapperFactoryBean<>(HnMapper.class);
 		factoryBean.setSqlSessionFactory(maSqlSessionFactoryBean.getObject());
 		return factoryBean;
 	}
 	
 	
-	@Bean(name = CommonConstants.TH_DATASOURCE, destroyMethod = "")
-	@ConfigurationProperties(prefix = CommonConstants.TH_DATASOURCE_PREFIX)
+	@Bean(name = TH_DATASOURCE, destroyMethod = "")
+	@ConfigurationProperties(prefix = TH_DATASOURCE_PREFIX)
 	public DataSource dataSourceTh() {
 		return DataSourceBuilder.create().build();
 	}
 	
-	@Bean(name = CommonConstants.TH_SESSION_FACTORY, destroyMethod = "")
-	public SqlSessionFactoryBean sqlSessionFactoryTh(@Named(CommonConstants.TH_DATASOURCE) final DataSource dataSource) throws Exception {
+	@Bean(name = TH_SESSION_FACTORY, destroyMethod = "")
+	public SqlSessionFactoryBean sqlSessionFactoryTh(@Named(TH_DATASOURCE) final DataSource dataSource) throws Exception {
 		final SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 		sqlSessionFactoryBean.setDataSource(dataSource);
 		SqlSessionFactory sqlSessionFactory = sqlSessionFactoryBean.getObject();
@@ -268,20 +270,20 @@ public class MaDataSourceConfiguration {
 	}
 	
 	@Bean
-	public MapperFactoryBean<ThMapper> etrMapperTh(@Named(CommonConstants.TH_SESSION_FACTORY) final SqlSessionFactoryBean maSqlSessionFactoryBean) throws Exception {
+	public MapperFactoryBean<ThMapper> etrMapperTh(@Named(TH_SESSION_FACTORY) final SqlSessionFactoryBean maSqlSessionFactoryBean) throws Exception {
 		MapperFactoryBean<ThMapper> factoryBean = new MapperFactoryBean<>(ThMapper.class);
 		factoryBean.setSqlSessionFactory(maSqlSessionFactoryBean.getObject());
 		return factoryBean;
 	}
 	
-	@Bean(name = CommonConstants.LKDC_DATASOURCE, destroyMethod = "")
-	@ConfigurationProperties(prefix = CommonConstants.LKDC_DATASOURCE_PREFIX)
+	@Bean(name = LKDC_DATASOURCE, destroyMethod = "")
+	@ConfigurationProperties(prefix = LKDC_DATASOURCE_PREFIX)
 	public DataSource dataSourceLkdc() {
 		return DataSourceBuilder.create().build();
 	}
 	
-	@Bean(name = CommonConstants.LKDC_SESSION_FACTORY, destroyMethod = "")
-	public SqlSessionFactoryBean sqlSessionFactoryLkdc(@Named(CommonConstants.LKDC_DATASOURCE) final DataSource dataSource) throws Exception {
+	@Bean(name = LKDC_SESSION_FACTORY, destroyMethod = "")
+	public SqlSessionFactoryBean sqlSessionFactoryLkdc(@Named(LKDC_DATASOURCE) final DataSource dataSource) throws Exception {
 		final SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 		sqlSessionFactoryBean.setDataSource(dataSource);
 		SqlSessionFactory sqlSessionFactory = sqlSessionFactoryBean.getObject();
@@ -290,7 +292,7 @@ public class MaDataSourceConfiguration {
 	}
 	
 	@Bean
-	public MapperFactoryBean<LkdcMapper> etrMapperLkdc(@Named(CommonConstants.LKDC_SESSION_FACTORY) final SqlSessionFactoryBean maSqlSessionFactoryBean) throws Exception {
+	public MapperFactoryBean<LkdcMapper> etrMapperLkdc(@Named(LKDC_SESSION_FACTORY) final SqlSessionFactoryBean maSqlSessionFactoryBean) throws Exception {
 		MapperFactoryBean<LkdcMapper> factoryBean = new MapperFactoryBean<>(LkdcMapper.class);
 		factoryBean.setSqlSessionFactory(maSqlSessionFactoryBean.getObject());
 		return factoryBean;

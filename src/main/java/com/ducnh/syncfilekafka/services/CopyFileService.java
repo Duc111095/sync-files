@@ -10,6 +10,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +25,7 @@ import com.ducnh.syncfilekafka.config.database.CommonConstants;
 import com.ducnh.syncfilekafka.config.database.properties.ServerFactory;
 import com.ducnh.syncfilekafka.config.database.properties.ServerProps;
 import com.ducnh.syncfilekafka.exception.SyncFileException;
+import com.ducnh.syncfilekafka.model.PairValue;
 import com.ducnh.syncfilekafka.model.SysFileInfo;
 import com.ducnh.syncfilekafka.model.SysFileInfoMessage;
 import com.ducnh.syncfilekafka.repositories.mappers.DefaultMapper;
@@ -106,49 +108,32 @@ public class CopyFileService {
 		String fileName = msgCopy.getFileenc();
 		ServerProps srcProps = serverFactory.getServerProps(srcDept);
 		ServerProps destProps = serverFactory.getServerProps(destDept);
-
+		String updatedController = updateController(controller, srcDept, destDept);
 		DefaultMapper srcMapper = dsMapperService.getMapper(srcDept);
 		DefaultMapper destMapper = dsMapperService.getMapper(destDept);
 				
 		if (operation.equalsIgnoreCase("delete")) {
 			try {
-				boolean deleted = deleteFile(fileName, destDept, msgCopy.getOptions(), destProps);
-				if (deleted) {
-					updateControllerMessage(msgCopy);
-					// delete SysFileInfo
-					if (destMapper.checkExistSysFileInfoByMessage(msgCopy) != null) {
-						destMapper.deleteSysFileInfo(msgCopy);
-					}
-					ntfMs = CommonConstants.DELETE_SUCCESS;
-					if (appConfig.isLogDebugged()) {
-						String successmsg = CommonConstants.DELETE_SUCCESSFULLY;
-						zulipService.sendDirectMessage(successmsg, sendErrorIds);
-						log.info(successmsg);
-					}
+				if (fileName.isBlank()) {
+					ntfMs = "File name delete is blank.";
 				} else {
-					ntfMs = CommonConstants.FILE_NOT_FOUND;
+					boolean deleted = deleteFile(fileName, destDept, msgCopy.getOptions(), destProps);
+					if (deleted) {
+						updateControllerSysFileMessage(msgCopy, srcDept, destDept);
+						// delete SysFileInfo
+						if (destMapper.checkExistSysFileInfoByMessage(msgCopy) != null) {
+							destMapper.deleteSysFileInfo2(msgCopy);
+						}
+						ntfMs = CommonConstants.DELETE_SUCCESS;
+					} else {
+						ntfMs = CommonConstants.FILE_NOT_FOUND;
+					}
 				}
 			} catch (Exception ex) {
 				ntfMs = CommonConstants.ERROR_DELETE;
+				throw new SyncFileException(ex);
 			}
 		} else if (operation.equalsIgnoreCase("insert")) {
-			
-			// Delete before insert
-			if (appConfig.isDeleteFileBeforeInsert()) {
-				if (!fileName.isBlank()) {
-					deleteFile(fileName, destDept, msgCopy.getOptions(), destProps);
-					destMapper.deleteSysFileInfo2(controller, sysKey, fileName);
-				} else {
-					if (destMapper.checkExistSysFileInfoByControllerSysKey(controller, sysKey) != null) {
-						List<SysFileInfo> deleteLists = destMapper.getSysFileInfosByControllerSysKeyMessage(msgCopy);
-						for (SysFileInfo sfi : deleteLists) {
-							deleteFile(sfi.getFileenc(), destDept, msgCopy.getOptions(), destProps);
-						}
-						destMapper.deleteSysFileInfos2(controller, sysKey);
-					}
-				}
-			}
-			
 			// insert 
 			
 			if (!fileName.isBlank()) {
@@ -159,72 +144,63 @@ public class CopyFileService {
 						// insert SysFileInfo
 						if (checkSysFileInfoExistByTimeout(msgCopy, srcMapper, appConfig.getTimeout())) {
 							SysFileInfo sysFileInfo = srcMapper.getSysFileInfoByMessage(msgCopy);
-							updateController(sysFileInfo);
+							updateControllerSysFileInfo(sysFileInfo, srcDept, destDept);
 
 							// update message
-							if (destMapper.checkExistSysFileInfoByFileenc(sysFileInfo) == null) {
-								if (destMapper.checkExistSysFileInfoByControllerSysKeyMessage(sysFileInfo) == null) {
-									sysFileInfo.setLinenbr(1);
-									destMapper.insertSysFileInfo(sysFileInfo);
-								} else {
-									List<SysFileInfo> upList = destMapper.getSysFileInfosByControllerSysKeyMessage(msgCopy);
-									upList.add(sysFileInfo);
-									setLineNbrList(upList);
-									for (SysFileInfo sfi : upList) {
-										destMapper.insertSysFileInfo(sfi);
-									}
-								}
-								ntfMs = CommonConstants.SYNC_SUCCESS;
+							if (destMapper.checkExistSysFileInfoByControllerSysKeyInfo(sysFileInfo) == null) {
+								sysFileInfo.setLinenbr(1);
+								destMapper.insertSysFileInfo(sysFileInfo);
 							} else {
-								ntfMs = CommonConstants.SYSFILEINFO_EXISTED;
+								List<SysFileInfo> upList = destMapper.getSysFileInfosByControllerSysKey2(updatedController, sysKey);
+								destMapper.deleteSysFileInfos2(updatedController, sysKey);
+								upList = removeFileEnc(fileName, upList);
+								upList.add(sysFileInfo);
+								setLineNbrList(upList);
+								upList.stream().forEach(destMapper::insertSysFileInfo);
+								ntfMs = CommonConstants.SYNC_SUCCESS;
 							}
+							ntfMs = CommonConstants.SYNC_SUCCESS;
+							
 						} else {
 							ntfMs = CommonConstants.SYSFILEINFO_NOT_FOUND;	
 						}
 					} else {
 						ntfMs = CommonConstants.FILE_EXISTED;
 					}
+				} else {
+					ntfMs = CommonConstants.FILE_NOT_FOUND;
 				}
-			} else {
-				// danh lai so thu tu va append
-				
+			} else {				
 				if (checkSysFileInfoExistByControllerSysKeyTimeout(msgCopy, srcMapper, appConfig.getTimeout())) {
+					List<SysFileInfo> sfiList = srcMapper.getSysFileInfosByControllerSysKeyMessage(msgCopy);
+					updateControllerSysFileMessage(msgCopy, srcDept, destDept);
 					List<SysFileInfo> upList = destMapper.getSysFileInfosByControllerSysKeyMessage(msgCopy);
 					upList = (upList == null) ? new ArrayList<>() : upList;
 					boolean updated = false;
 					boolean copied = false;
-					List<SysFileInfo> sfiList = srcMapper.getSysFileInfosByControllerSysKeyMessage(msgCopy);
 					for (SysFileInfo sfi : sfiList) {
 						fileName = sfi.getFileenc();
 						copied = copyFile(fileName, srcDept, destDept, msgCopy.getOptions(), srcProps, destProps);
 						if (copied) {
-							updateController(sfi);
-							if (!checkFileEncInList(fileName, upList)) {
-								upList.add(sfi);
-								updated = true;
-							}
+							updateControllerSysFileInfo(sfi, srcDept, destDept);
+							upList = removeFileEnc(fileName, upList);
+							upList.add(sfi);
+							updated = true;
 						} 
 					}
 					if (updated) {
+						destMapper.deleteSysFileInfos2(updatedController, sysKey);
 						setLineNbrList(upList);
-						for (SysFileInfo sfi : upList) {
-							destMapper.insertSysFileInfo(sfi);
-						}
+						upList.stream().forEach(destMapper::insertSysFileInfo);
 						ntfMs = CommonConstants.SYNC_SUCCESS;
 					} else {
-						ntfMs = CommonConstants.SYSFILEINFO_EXISTED;
-					}
-					
-					if (!copied) {
 						ntfMs = CommonConstants.FILE_EXISTED;
 					}
 				} else {
 					ntfMs = CommonConstants.SYSFILEINFO_NOT_FOUND;	
 				}
 			}
-		}
-		// Check Sysfileinfo source
-		
+		}		
 		// Update lai message
 		msgCopy.setUpdateDate(new Timestamp(Instant.now().toEpochMilli()));
 		msgCopy.setStatus('1');
@@ -236,106 +212,14 @@ public class CopyFileService {
 		}
 	}
 	
-	public void copyFileAndInsertSysFileInfo(final SysFileInfoMessage message) {
-		try {
-			// Copy File
-			SysFileInfoMessage msgCopy = message.getDeepCopyMessage();
-			String ntfMs = "";
-			if (msgCopy.getStatus() == appConfig.getIgnoreStatus() || msgCopy.getOp().equals("r")) {
-				return;
+	private List<SysFileInfo> removeFileEnc(String fileName, List<SysFileInfo> list) {
+		List<SysFileInfo> results = new LinkedList<>();
+		for (int i = 0; i < list.size(); i++) {
+			if (!list.get(i).getFileenc().trim().equals(fileName.trim())) {
+				results.add(list.get(i));
 			}
-			
-			String messageDatabaseSource = msgCopy.getSourceDb();
-			DefaultMapper msgSourceMapper = extractMapperFromDatabaseName(messageDatabaseSource);
-	
-			String operation = msgCopy.getOperation().trim();
-			String srcDept = msgCopy.getDeptSrc().trim().toUpperCase();
-			String destDept = msgCopy.getDeptDest().trim().toUpperCase();
-			String fileName = msgCopy.getFileenc();
-			ServerProps srcProps = serverFactory.getServerProps(srcDept);
-			ServerProps destProps = serverFactory.getServerProps(destDept);
-
-			DefaultMapper srcMapper = dsMapperService.getMapper(srcDept);
-			DefaultMapper destMapper = dsMapperService.getMapper(destDept);
-			
-			if (operation.equalsIgnoreCase("delete")) {
-				try {
-					boolean deleted = deleteFile(fileName, destDept, msgCopy.getOptions(), destProps);
-					if (deleted) {
-						// delete SysFileInfo
-						updateControllerMessage(msgCopy);
-						if (destMapper.checkExistSysFileInfoByMessage(msgCopy) != null) {
-							destMapper.deleteSysFileInfo(msgCopy);
-						}
-						ntfMs = CommonConstants.DELETE_SUCCESS;
-						if (appConfig.isLogDebugged()) {
-							String successmsg = CommonConstants.DELETE_SUCCESSFULLY;
-							zulipService.sendDirectMessage(successmsg, sendErrorIds);
-							log.info(successmsg);
-						}
-					} else {
-						ntfMs = CommonConstants.FILE_NOT_FOUND;
-					}
-				} catch (Exception ex) {
-					ntfMs = CommonConstants.ERROR_DELETE;
-				}
-			} else if (operation.equalsIgnoreCase("insert")) {
-				boolean fileSrcExisted = checkFileExistByTimeout(fileName, srcDept, appConfig.getTimeout(), srcProps);
-				if (fileSrcExisted) {
-					boolean copied = copyFile(fileName, srcDept, destDept, msgCopy.getOptions(), srcProps, destProps);
-					if (copied) {
-						// insert SysFileInfo
-						if (checkSysFileInfoExistByTimeout(msgCopy, srcMapper, appConfig.getTimeout())) {
-							SysFileInfo sysFileInfo = srcMapper.getSysFileInfoByMessage(msgCopy);
-							updateController(sysFileInfo);
-
-							// update message
-							if (destMapper.checkExistSysFileInfo(sysFileInfo) == null) {
-								destMapper.insertSysFileInfo(sysFileInfo);
-								ntfMs = CommonConstants.SYNC_SUCCESS;
-							} else {
-								if (appConfig.isAppendable()) {
-									Integer maxLinenbr = destMapper.getMaxLineNumberByMessage(msgCopy);
-									sysFileInfo.setLinenbr(maxLinenbr == null ? 1 : maxLinenbr + 1);
-									destMapper.insertSysFileInfo(sysFileInfo);
-									ntfMs = CommonConstants.SYNC_SUCCESS;
-								} 
-								ntfMs = CommonConstants.SYSFILEINFO_EXISTED;
-							}
-							if (appConfig.isLogDebugged()) {
-								String successmsg = CommonConstants.SYNC_SUCCESSFULLY;
-								zulipService.sendDirectMessage(successmsg, sendErrorIds);
-								log.info(successmsg);
-							}
-						} else {
-							ntfMs = CommonConstants.SYSFILEINFO_NOT_FOUND;	
-						}
-					} else {
-						ntfMs = CommonConstants.FILE_EXISTED;
-					}
-				}
-				// file chua dc luu
-				else {
-					ntfMs = CommonConstants.NOT_FOUND_FILE_SOURCE;
-				}
-			}
-
-			// Update lai message
-			msgCopy.setUpdateDate(new Timestamp(Instant.now().toEpochMilli()));
-			msgCopy.setStatus('1');
-			msgCopy.setErrMsg(ntfMs.replace("%s", "").trim());
-			msgSourceMapper.updateMessage(msgCopy);
-			if (!ntfMs.equals(CommonConstants.EMPTY_STRING)) {
-				zulipService.sendDirectMessage(ntfMs.formatted(message), sendErrorIds);
-				log.info(ntfMs.formatted(message));
-			}
-		} catch (Exception ex) {
-			String err = "Error: " + message + "-" + ex.toString();
-			zulipService.sendDirectMessage(err, sendErrorIds);
-			log.error(err);
-		} finally {
-			
 		}
+		return results;
 	}
 	
 	private void setLineNbrList(List<SysFileInfo> sysLists) {
@@ -344,32 +228,73 @@ public class CopyFileService {
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	private boolean checkFileEncInList(String fileName, List<SysFileInfo> list) {
 		for (SysFileInfo sfi : list) {
-			if (sfi.getFileenc().trim().equals(fileName)) {
+			if (sfi.getFileenc().trim().equals(fileName.trim())) {
 				return true;
 			}
 		}
 		return false;
 	}
-	 
-	private void updateController(SysFileInfo src) {
-		for (Map.Entry<String, String> m : appConfig.getReplaceController().entrySet()) {
-			if (src.getController().trim().equalsIgnoreCase(m.getKey())) {
-				src.setController(m.getValue());
-				break;
-			}
-		}
+	
+	/**
+	 * 
+	 * Update controller
+	 * @param msgCopy
+	 * @param inout - 1: den, 0: di
+	 */
+	private void updateControllerSysFileMessage(SysFileInfoMessage msgCopy, String srcDept, String destDept) {
+		List<PairValue> listPairs = appConfig.getReplaceController();
+		listPairs.stream().filter(x -> x.getC().equalsIgnoreCase(srcDept) || x.getC().equalsIgnoreCase(destDept)).forEach(
+				x -> {
+					if (x.getC().equals(srcDept)) { // 1 -> 2
+						if(msgCopy.getController().trim().equals(x.getP1())) {
+							msgCopy.setController(x.getP2());
+						}
+					} else {
+						if(msgCopy.getController().trim().equals(x.getP2())) {
+							msgCopy.setController(x.getP1());
+						}
+					}
+				}
+		);
 	}
 	
-	private void updateControllerMessage(SysFileInfoMessage msgCopy) {
-		for (Map.Entry<String, String> m : appConfig.getReplaceController().entrySet()) {
-			if (msgCopy.getController().trim().equalsIgnoreCase(m.getKey())) {
-				msgCopy.setController(m.getValue());
-				break;
-			}
+	private String updateController(String controller, String srcDept, String destDept) {
+		List<PairValue> listPairs = appConfig.getReplaceController();
+		for (PairValue x : listPairs) {
+			if (x.getC().equals(srcDept)) { // 1 -> 2
+				if(controller.trim().equals(x.getP1().trim())) {
+					return x.getP2();
+				}
+			} else {
+				if(controller.trim().equals(x.getP2())) {
+					return  x.getP1();
+				}
+			} 
 		}
+		return null;
 	}
+	
+	
+	private void updateControllerSysFileInfo(SysFileInfo sfi, String srcDept, String destDept) {
+		List<PairValue> listPairs = appConfig.getReplaceController();
+		listPairs.stream().filter(x -> x.getC().equalsIgnoreCase(srcDept) || x.getC().equalsIgnoreCase(destDept)).forEach(
+				x -> {
+					if (x.getC().equals(srcDept)) { // 1 -> 2
+						if(sfi.getController().trim().equals(x.getP1())) {
+							sfi.setController(x.getP2());
+						}
+					} else {
+						if(sfi.getController().trim().equals(x.getP2())) {
+							sfi.setController(x.getP1());
+						}
+					}
+				}
+		);
+	}
+	
 	
 	private boolean checkFileExistByTimeout(String fineenc, String src, int timeout, ServerProps srcProps) {
 		String srcPath = transformPath(serverMap.get(src) + java.io.File.separator + fineenc);
@@ -416,7 +341,7 @@ public class CopyFileService {
 		try {
 			Long start = System.currentTimeMillis();
 			while (System.currentTimeMillis() - start < timeout * 1_000) {
-				if (mapper.checkExistSysFileInfoByMessage(msg) != null) {
+				if (mapper.checkExistSysFileInfoByFileEnc(msg) != null) {
 					return true;
 				}
 				Thread.sleep(1000);

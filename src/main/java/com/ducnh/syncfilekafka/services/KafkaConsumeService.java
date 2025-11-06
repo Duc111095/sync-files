@@ -31,7 +31,7 @@ public class KafkaConsumeService {
 				for (final ConsumerRecord<String, SysFileInfoMessage> record : records) {
 					// final String key = record.key();
 					final SysFileInfoMessage sysFileInfoMessage = record.value();
-					copyFileService.copyFileAndInsertSysFileInfo(sysFileInfoMessage);
+					copyFileService.copyFileAndInsertSysfileInfoV2(sysFileInfoMessage);
 				}
 			}
 		} catch (Exception ex) {

@@ -102,59 +102,63 @@ public interface DefaultMapper {
 	SysFileInfo getSysFileInfoById(String controller, String sysKey, int linenbr);
 	
 	@ResultMap("sysFileInfoResult")
-	@Select("select * from sysfileinfo where controller='${controller}' and sysKey='${sysKey}' and line_nbr = ${linenbr}")
+	@Select("select * from sysfileinfo where controller='${controller}' and sysKey='${sysKey}' and file_enc = '${fileenc}'")
 	SysFileInfo getSysFileInfoByMessage(SysFileInfoMessage message);
     
     @Insert("insert into sysfileinfo (controller, syskey, line_nbr, file_name, file_size, file_type, file_ext, file_enc, datetime0, datetime2, user_id0, user_id2)"
     		+ "values('${controller}', '${sysKey}', ${linenbr}, N'${filename}', ${filesize}, '${filetype}', '${fileext}', '${fileenc}' , '${datetime0}', '${datetime2}', ${userid0}, ${userid2})")
     void insertSysFileInfo(SysFileInfo sysFileInfo);
     
-    @Delete("delete from sysfileinfo where controller='${controller}' and sysKey='${sysKey}' and fileenc = ${fileenc}")
-    void deleteSysFileInfo(SysFileInfoMessage message);
+    @Delete("delete from sysfileinfo where controller='${controller}' and sysKey='${sysKey}' and file_enc = '${fileenc}'")
+    void deleteSysFileInfo(SysFileInfo sfi);
     
-    @Delete("delete from sysfileinfo where controller='#{controller}' and sysKey='#{sysKey}' and fileenc = '#{fileenc}'")
-    void deleteSysFileInfo2(String controller, String sysKey, String fileenc);
+    @Delete("delete from sysfileinfo where controller='${controller}' and sysKey='${sysKey}' and file_enc = '${fileenc}'")
+    void deleteSysFileInfo2(SysFileInfoMessage message);
+    
+    @Delete("delete from sysfileinfo where controller='#{controller}' and sysKey='#{sysKey}' and file_enc = '#{fileenc}'")
+    void deleteSysFileInfo3(String controller, String sysKey, String fileenc);
     
     @Delete("delete from sysfileinfo where controller='${controller}' and sysKey='${sysKey}'")
     void deleteSysFileInfos(SysFileInfo sysFileInfo);
     
-    @Delete("delete from sysfileinfo where controller='#{controller}' and sysKey='#{sysKey}'")
+    @Delete("delete from sysfileinfo where controller=#{controller} and sysKey=#{sysKey}")
     void deleteSysFileInfos2(String controller, String sysKey);
+
+    @Select("select 1 from sysfileinfo where controller='${controller}' and sysKey='${sysKey}' and file_enc = '${fileenc}'")
+    List<Integer> checkExistSysFileInfoByFileenc(SysFileInfo msg);
     
-    @Select("select 1 from sysfileinfo where controller='#{controller}' and sysKey='#{sysKey}' and fileenc = '#{fileenc}'")
-	Integer checkExistSysFileInfoByFileenc2(String controller, String sysKey, String fileenc);
-    
-    @Select("select 1 from sysfileinfo where controller='${controller}' and sysKey='${sysKey}' and fileenc = '${fileenc}'")
-   	Integer checkExistSysFileInfoByFileenc(SysFileInfo msg);
-     
-    @Select("select max(line_nbr) from sysfileinfo where controller='#{controller}' and sysKey='#{sysKey}'")
-   	Integer getMaxLineNumber(String controller, String sysKey);
-    
-    @Select("select max(line_nbr) from sysfileinfo where controller='${controller}' and sysKey='${sysKey}'")
-  	Integer getMaxLineNumberByMessage(SysFileInfoMessage msg);
+    @Select("select 1 from sysfileinfo where controller='#{controller}' and sysKey='#{sysKey}' and file_enc = '#{fileenc}'")
+    List<Integer> checkExistSysFileInfoByFileenc2(String controller, String sysKey, String fileenc);
     
     @Select("select 1 from sysfileinfo where controller='#{controller}' and sysKey='#{sysKey}' and line_nbr = #{linenbr}")
-	Integer checkExistSysFileInfoById(String controller, String sysKey, int linenbr);
+	Integer checkExistSysFileInfo2(String controller, String sysKey, int linenbr);
     
-    @Select("select 1 from sysfileinfo where controller='${controller}' and sysKey='${sysKey}' and line_nbr = ${linenbr}")
-    Integer checkExistSysFileInfo(SysFileInfo sysFileInfo);
+    @Select("select 1 from sysfileinfo where controller='${controller}' and sysKey='${sysKey}' and file_enc = '${fileenc}'")
+    List<Integer> checkExistSysFileInfo(SysFileInfo sysFileInfo);
     
-    @Select("select 1 from sysfileinfo where controller='${controller}' and sysKey='${sysKey}' and line_nbr = ${linenbr}")
-    Integer checkExistSysFileInfoByMessage(SysFileInfoMessage sysFileInfo);
+    @Select("select 1 from sysfileinfo where controller='${controller}' and sysKey='${sysKey}' and file_enc = '${fileenc}'")
+    List<Integer> checkExistSysFileInfoByMessage(SysFileInfoMessage sysFileInfo);
     
-    @Select("select 1 from sysfileinfo where controller='${controller}' and sysKey='${sysKey}' and flienec = '${fileName}'")
-    Integer checkExistSysFileInfoByFileEncMsg(SysFileInfoMessage sysFileInfo);
+    @Select("select 1 from sysfileinfo where controller='${controller}' and sysKey='${sysKey}' and file_enc = '${fileenc}'")
+    List<Integer> checkExistSysFileInfoByFileEnc(SysFileInfoMessage sysFileInfo);
     
-    @Select("select 1 from sysfileinfo where flienec = '#{fileName}'")
-    Integer checkExistSysFileInfoByFileName(String fileName);
+    @Select("select 1 from sysfileinfo where file_enc = #{fileName}")
+    List<Integer> checkExistSysFileInfoByFileName(String fileName);
     
-    @Select("select 1 from sysfileinfo where controller='#{controller}' and sysKey='#{sysKey}'")
-    Integer checkExistSysFileInfoByControllerSysKey(String controller, String sysKey);
+    @Select("select 1 from sysfileinfo where controller=#{controller} and sysKey=#{sysKey}")
+    List<Integer> checkExistSysFileInfoByControllerSysKey(String controller, String sysKey);
     
     @Select("select 1 from sysfileinfo where controller='${controller}' and sysKey='${sysKey}'")
-    Integer checkExistSysFileInfoByControllerSysKeyMessage(SysFileInfo sysFileInfo);
+    List<Integer> checkExistSysFileInfoByControllerSysKeyInfo(SysFileInfo sysFileInfo);
+    
+    @Select("select 1 from sysfileinfo where controller='${controller}' and sysKey='${sysKey}'")
+    List<Integer> checkExistSysFileInfoByControllerSysKeyMessage(SysFileInfoMessage msg);
     
 	@ResultMap("sysFileInfoResult")
     @Select("select * from sysfileinfo where controller='${controller}' and sysKey='${sysKey}'")
     List<SysFileInfo> getSysFileInfosByControllerSysKeyMessage(SysFileInfoMessage sysFileInfo);
+	
+	@ResultMap("sysFileInfoResult")
+    @Select("select * from sysfileinfo where controller=#{controller} and sysKey=#{sysKey}")
+    List<SysFileInfo> getSysFileInfosByControllerSysKey2(String controller, String sysKey);
 }

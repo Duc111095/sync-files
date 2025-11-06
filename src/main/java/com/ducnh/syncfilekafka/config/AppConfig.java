@@ -1,9 +1,13 @@
 package com.ducnh.syncfilekafka.config;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+
+import com.ducnh.syncfilekafka.model.PairValue;
 
 import lombok.Data;
 
@@ -30,8 +34,19 @@ public class AppConfig {
 	private boolean isAppendable;
 	private boolean deleteFileBeforeInsert;
 	private int timeout;
-	private Map<String, String> replaceController;
+	private List<List<String>> replaceController;
 	
+	public List<PairValue> getReplaceController(){
+		List<PairValue> pairs = new ArrayList<>();
+		for (List<String> l : replaceController) {
+			PairValue p = new PairValue();
+			p.setC(l.get(0));
+			p.setP1(l.get(1));
+			p.setP2(l.get(2));
+			pairs.add(p);
+		}
+		return pairs;
+	} 
 	public long[] getSendErrorIdsArray() {
 		String[] strArr = sendErrorIds.split(",");
 		long[] result = new long[strArr.length];
