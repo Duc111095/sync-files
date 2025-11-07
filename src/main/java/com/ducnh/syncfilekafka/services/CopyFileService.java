@@ -87,8 +87,9 @@ public class CopyFileService {
 	 * 
 	 * 
 	 * @param message
+	 * @throws InterruptedException 
 	 */
-	public void copyFileAndInsertSysfileInfoV2(final SysFileInfoMessage message) {
+	public void copyFileAndInsertSysfileInfoV2(final SysFileInfoMessage message) throws InterruptedException{
 		// Copy message
 		SysFileInfoMessage msgCopy = message.getDeepCopyMessage();
 		String ntfMs = "";
@@ -147,7 +148,7 @@ public class CopyFileService {
 							updateControllerSysFileInfo(sysFileInfo, srcDept, destDept);
 
 							// update message
-							if (destMapper.checkExistSysFileInfoByControllerSysKeyInfo(sysFileInfo) == null) {
+							if (destMapper.checkExistSysFileInfoByControllerSysKey(updatedController, sysKey) == null) {
 								sysFileInfo.setLinenbr(1);
 								destMapper.insertSysFileInfo(sysFileInfo);
 							} else {
@@ -170,7 +171,8 @@ public class CopyFileService {
 				} else {
 					ntfMs = CommonConstants.FILE_NOT_FOUND;
 				}
-			} else {				
+			} else {
+				Thread.sleep(1000);
 				if (checkSysFileInfoExistByControllerSysKeyTimeout(msgCopy, srcMapper, appConfig.getTimeout())) {
 					List<SysFileInfo> sfiList = srcMapper.getSysFileInfosByControllerSysKeyMessage(msgCopy);
 					updateControllerSysFileMessage(msgCopy, srcDept, destDept);
@@ -268,13 +270,13 @@ public class CopyFileService {
 				if(controller.trim().equals(x.getP1().trim())) {
 					return x.getP2();
 				}
-			} else {
-				if(controller.trim().equals(x.getP2())) {
+			} else if (x.getC().equals(destDept)){
+				if(controller.trim().equals(x.getP2().trim())) {
 					return  x.getP1();
 				}
 			} 
 		}
-		return null;
+		return controller;
 	}
 	
 	
@@ -389,7 +391,6 @@ public class CopyFileService {
             AuthenticationContext ac = new AuthenticationContext(destProps.getFsUs(), destProps.getFsPw().toCharArray(), destProps.getFsDm());
             Session destSession = destConn.authenticate(ac);
             try (DiskShare destShare = (DiskShare) destSession.connectShare(destProps.getConnectShare())) {
-            	System.out.println("Dest Share: " + destShare);
                 if (destShare.fileExists(destPath) && !EnumWithValue.EnumUtils.isSet(destShare.getFileInformation(destPath).getBasicInformation().getFileAttributes(), FILE_ATTRIBUTE_DIRECTORY)) {
                 	destShare.rm(destPath);
     				return true;  
