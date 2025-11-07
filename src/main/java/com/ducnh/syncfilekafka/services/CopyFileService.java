@@ -131,78 +131,80 @@ public class CopyFileService {
 					}
 				}
 			} catch (Exception ex) {
-				ntfMs = CommonConstants.ERROR_DELETE;
-				throw new SyncFileException(ex);
+				ntfMs = ex.getMessage();
 			}
 		} else if (operation.equalsIgnoreCase("insert")) {
 			// insert 
-			
-			if (!fileName.isBlank()) {
-				boolean fileSrcExisted = checkFileExistByTimeout(fileName, srcDept, appConfig.getTimeout(), srcProps);
-				if (fileSrcExisted) {
-					boolean copied = copyFile(fileName, srcDept, destDept, msgCopy.getOptions(), srcProps, destProps);
-					if (copied) {
-						// insert SysFileInfo
-						if (checkSysFileInfoExistByTimeout(msgCopy, srcMapper, appConfig.getTimeout())) {
-							SysFileInfo sysFileInfo = srcMapper.getSysFileInfoByMessage(msgCopy);
-							updateControllerSysFileInfo(sysFileInfo, srcDept, destDept);
-
-							// update message
-							if (destMapper.checkExistSysFileInfoByControllerSysKey(updatedController, sysKey) == null) {
-								sysFileInfo.setLinenbr(1);
-								destMapper.insertSysFileInfo(sysFileInfo);
-							} else {
-								List<SysFileInfo> upList = destMapper.getSysFileInfosByControllerSysKey2(updatedController, sysKey);
-								destMapper.deleteSysFileInfos2(updatedController, sysKey);
-								upList = removeFileEnc(fileName, upList);
-								upList.add(sysFileInfo);
-								setLineNbrList(upList);
-								upList.stream().forEach(destMapper::insertSysFileInfo);
+			try {	
+				if (!fileName.isBlank()) {
+					boolean fileSrcExisted = checkFileExistByTimeout(fileName, srcDept, appConfig.getTimeout(), srcProps);
+					if (fileSrcExisted) {
+						boolean copied = copyFile(fileName, srcDept, destDept, msgCopy.getOptions(), srcProps, destProps);
+						if (copied) {
+							// insert SysFileInfo
+							if (checkSysFileInfoExistByTimeout(msgCopy, srcMapper, appConfig.getTimeout())) {
+								SysFileInfo sysFileInfo = srcMapper.getSysFileInfoByMessage(msgCopy);
+								updateControllerSysFileInfo(sysFileInfo, srcDept, destDept);
+	
+								// update message
+								if (destMapper.checkExistSysFileInfoByControllerSysKey(updatedController, sysKey) == null) {
+									sysFileInfo.setLinenbr(1);
+									destMapper.insertSysFileInfo(sysFileInfo);
+								} else {
+									List<SysFileInfo> upList = destMapper.getSysFileInfosByControllerSysKey2(updatedController, sysKey);
+									destMapper.deleteSysFileInfos2(updatedController, sysKey);
+									upList = removeFileEnc(fileName, upList);
+									upList.add(sysFileInfo);
+									setLineNbrList(upList);
+									upList.stream().forEach(destMapper::insertSysFileInfo);
+									ntfMs = CommonConstants.SYNC_SUCCESS;
+								}
 								ntfMs = CommonConstants.SYNC_SUCCESS;
+								
+							} else {
+								ntfMs = CommonConstants.SYSFILEINFO_NOT_FOUND;	
 							}
-							ntfMs = CommonConstants.SYNC_SUCCESS;
-							
 						} else {
-							ntfMs = CommonConstants.SYSFILEINFO_NOT_FOUND;	
+							ntfMs = CommonConstants.FILE_EXISTED;
 						}
 					} else {
-						ntfMs = CommonConstants.FILE_EXISTED;
+						ntfMs = CommonConstants.FILE_NOT_FOUND;
 					}
 				} else {
-					ntfMs = CommonConstants.FILE_NOT_FOUND;
-				}
-			} else {
-				Thread.sleep(1000);
-				if (checkSysFileInfoExistByControllerSysKeyTimeout(msgCopy, srcMapper, appConfig.getTimeout())) {
-					List<SysFileInfo> sfiList = srcMapper.getSysFileInfosByControllerSysKeyMessage(msgCopy);
-					updateControllerSysFileMessage(msgCopy, srcDept, destDept);
-					List<SysFileInfo> upList = destMapper.getSysFileInfosByControllerSysKeyMessage(msgCopy);
-					upList = (upList == null) ? new ArrayList<>() : upList;
-					boolean updated = false;
-					boolean copied = false;
-					for (SysFileInfo sfi : sfiList) {
-						fileName = sfi.getFileenc();
-						copied = copyFile(fileName, srcDept, destDept, msgCopy.getOptions(), srcProps, destProps);
-						if (copied) {
-							updateControllerSysFileInfo(sfi, srcDept, destDept);
-							upList = removeFileEnc(fileName, upList);
-							upList.add(sfi);
-							updated = true;
-						} 
-					}
-					if (updated) {
-						destMapper.deleteSysFileInfos2(updatedController, sysKey);
-						setLineNbrList(upList);
-						upList.stream().forEach(destMapper::insertSysFileInfo);
-						ntfMs = CommonConstants.SYNC_SUCCESS;
+					Thread.sleep(1000);
+					if (checkSysFileInfoExistByControllerSysKeyTimeout(msgCopy, srcMapper, appConfig.getTimeout())) {
+						List<SysFileInfo> sfiList = srcMapper.getSysFileInfosByControllerSysKeyMessage(msgCopy);
+						updateControllerSysFileMessage(msgCopy, srcDept, destDept);
+						List<SysFileInfo> upList = destMapper.getSysFileInfosByControllerSysKeyMessage(msgCopy);
+						upList = (upList == null) ? new ArrayList<>() : upList;
+						boolean updated = false;
+						boolean copied = false;
+						for (SysFileInfo sfi : sfiList) {
+							fileName = sfi.getFileenc();
+							copied = copyFile(fileName, srcDept, destDept, msgCopy.getOptions(), srcProps, destProps);
+							if (copied) {
+								updateControllerSysFileInfo(sfi, srcDept, destDept);
+								upList = removeFileEnc(fileName, upList);
+								upList.add(sfi);
+								updated = true;
+							} 
+						}
+						if (updated) {
+							destMapper.deleteSysFileInfos2(updatedController, sysKey);
+							setLineNbrList(upList);
+							upList.stream().forEach(destMapper::insertSysFileInfo);
+							ntfMs = CommonConstants.SYNC_SUCCESS;
+						} else {
+							ntfMs = CommonConstants.FILE_EXISTED;
+						}
 					} else {
-						ntfMs = CommonConstants.FILE_EXISTED;
+						ntfMs = CommonConstants.SYSFILEINFO_NOT_FOUND;	
 					}
-				} else {
-					ntfMs = CommonConstants.SYSFILEINFO_NOT_FOUND;	
 				}
+			} catch (Exception ex) {
+				ntfMs = ex.getMessage();
 			}
-		}		
+		}	
 		// Update lai message
 		msgCopy.setUpdateDate(new Timestamp(Instant.now().toEpochMilli()));
 		msgCopy.setStatus('1');
@@ -378,7 +380,7 @@ public class CopyFileService {
                 return false;
             }				
 		} catch (Exception ex) {
-			throw new SyncFileException(ex);
+			throw new SyncFileException("Error when copy file from source: " + src + " to destination: " + dest);
 		} finally {
 			client.close();
 		}
@@ -399,7 +401,7 @@ public class CopyFileService {
                 return false;
             }				
 		} catch (Exception ex) {
-			throw new SyncFileException(ex);
+			throw new SyncFileException("Error when delete file in destination: " + dest);
 		} finally {
 			client.close();
 		}
@@ -418,7 +420,7 @@ public class CopyFileService {
 		try (InputStream stream = readBytes(transformPath(remoteSourcePath), srcDiskShare)) {
 			write(transformPath(remoteDestinationPath), stream, destDiskShare);
 		} catch (IOException | SMBApiException ex) {
-			log.error("Error while copy file {}", remoteSourcePath, ex);
+			throw new SyncFileException(ex);
 		}
 	}
 	
