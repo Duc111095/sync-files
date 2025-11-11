@@ -170,7 +170,7 @@ app:
         naPathFile: Upload\NhatAnh_App
         skPathFile: Upload\SKMT_App
         tbPathFile: Upload\MinhTam_App
-        cnmtPathFile: MINHTAMHCM_App
+        cnmtPathFile: Upload\MINHTAMHCM_App
         ctdmPathFile: Upload\DuyMinhHCM_App
         thPathFile: Upload\THANHHA_App
         hnPathFile: Upload\HAINAM_App

@@ -96,7 +96,7 @@ public class CopyFileService {
 		if (msgCopy.getStatus() == appConfig.getIgnoreStatus() || msgCopy.getOp().equals("r")) {
 			return;
 		}
-		
+		boolean isSendZullip = false;
 		String messageDbSource = msgCopy.getSourceDb();
 		DefaultMapper msgSourceMapper = extractMapperFromDatabaseName(messageDbSource);
 		
@@ -128,6 +128,7 @@ public class CopyFileService {
 						ntfMs = CommonConstants.DELETE_SUCCESS;
 					} else {
 						ntfMs = CommonConstants.FILE_NOT_FOUND;
+						isSendZullip = true;
 					}
 				}
 			} catch (Exception ex) {
@@ -162,7 +163,8 @@ public class CopyFileService {
 								ntfMs = CommonConstants.SYNC_SUCCESS;
 								
 							} else {
-								ntfMs = CommonConstants.SYSFILEINFO_NOT_FOUND;	
+								ntfMs = CommonConstants.SYSFILEINFO_NOT_FOUND;
+								isSendZullip = true;
 							}
 						} else {
 							ntfMs = CommonConstants.FILE_EXISTED;
@@ -198,11 +200,13 @@ public class CopyFileService {
 							ntfMs = CommonConstants.FILE_EXISTED;
 						}
 					} else {
-						ntfMs = CommonConstants.SYSFILEINFO_NOT_FOUND;	
+						ntfMs = CommonConstants.SYSFILEINFO_NOT_FOUND;
+						isSendZullip = true;
 					}
 				}
 			} catch (Exception ex) {
 				ntfMs = ex.getMessage();
+				isSendZullip = true;
 			}
 		}	
 		// Update lai message
@@ -211,7 +215,9 @@ public class CopyFileService {
 		msgCopy.setErrMsg(ntfMs.replace("%s", "").trim());
 		msgSourceMapper.updateMessage(msgCopy);
 		if (!ntfMs.equals(CommonConstants.EMPTY_STRING)) {
-			zulipService.sendDirectMessage(ntfMs.formatted(message), sendErrorIds);
+			if (isSendZullip) {
+				zulipService.sendDirectMessage(ntfMs.formatted(message), sendErrorIds);
+			}
 			log.info(ntfMs.formatted(message));
 		}
 	}
@@ -323,7 +329,6 @@ public class CopyFileService {
 			client.close();
 		}	
 	}
-	
 	
 	private boolean checkSysFileInfoExistByControllerSysKeyTimeout(SysFileInfoMessage msg, DefaultMapper mapper, int timeout) {
 		try {
