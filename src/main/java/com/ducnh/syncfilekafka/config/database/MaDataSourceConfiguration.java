@@ -226,8 +226,8 @@ public class MaDataSourceConfiguration {
 	}
 	
 	@Bean
-	public MapperFactoryBean<CtdmMapper> etrMapperDm(@Named(DM_SESSION_FACTORY) final SqlSessionFactoryBean maSqlSessionFactoryBean) throws Exception {
-		MapperFactoryBean<CtdmMapper> factoryBean = new MapperFactoryBean<>(CtdmMapper.class);
+	public MapperFactoryBean<DmMapper> etrMapperDm(@Named(DM_SESSION_FACTORY) final SqlSessionFactoryBean maSqlSessionFactoryBean) throws Exception {
+		MapperFactoryBean<DmMapper> factoryBean = new MapperFactoryBean<>(DmMapper.class);
 		factoryBean.setSqlSessionFactory(maSqlSessionFactoryBean.getObject());
 		return factoryBean;
 	}
