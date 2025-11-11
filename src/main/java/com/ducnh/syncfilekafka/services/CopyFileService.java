@@ -117,6 +117,7 @@ public class CopyFileService {
 			try {
 				if (fileName.isBlank()) {
 					ntfMs = "File name delete is blank.";
+					isSendZullip = true;
 				} else {
 					boolean deleted = deleteFile(fileName, destDept, msgCopy.getOptions(), destProps);
 					if (deleted) {
@@ -128,7 +129,6 @@ public class CopyFileService {
 						ntfMs = CommonConstants.DELETE_SUCCESS;
 					} else {
 						ntfMs = CommonConstants.FILE_NOT_FOUND;
-						isSendZullip = true;
 					}
 				}
 			} catch (Exception ex) {
