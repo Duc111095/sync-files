@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ducnh.syncfilekafka.repositories.mappers.impl.CnmtMapper;
 import com.ducnh.syncfilekafka.repositories.mappers.impl.CtdmMapper;
+import com.ducnh.syncfilekafka.repositories.mappers.impl.DmMapper;
 import com.ducnh.syncfilekafka.repositories.mappers.impl.HaMapper;
 import com.ducnh.syncfilekafka.repositories.mappers.impl.HnMapper;
 import com.ducnh.syncfilekafka.repositories.mappers.impl.LkdcMapper;
