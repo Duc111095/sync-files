@@ -24,6 +24,7 @@ public class SqlSessionFactoryService {
 		@Named(CommonConstants.TB_SESSION_FACTORY) final SqlSessionFactory tbSqlSessionFactoryBean,
 		@Named(CommonConstants.CNMT_SESSION_FACTORY) final SqlSessionFactory cnmtSqlSessionFactoryBean,
 		@Named(CommonConstants.CTDM_SESSION_FACTORY) final SqlSessionFactory ctdmSqlSessionFactoryBean,
+		@Named(CommonConstants.DM_SESSION_FACTORY) final SqlSessionFactory dmSqlSessionFactoryBean,
 		@Named(CommonConstants.TH_SESSION_FACTORY) final SqlSessionFactory thSqlSessionFactoryBean,
 		@Named(CommonConstants.HA_SESSION_FACTORY) final SqlSessionFactory haSqlSessionFactoryBean,
 		@Named(CommonConstants.HN_SESSION_FACTORY) final SqlSessionFactory hnSqlSessionFactoryBean,
@@ -38,6 +39,7 @@ public class SqlSessionFactoryService {
 		sqlSessionFactoryMap.put(CommonConstants.TB, tbSqlSessionFactoryBean);
 		sqlSessionFactoryMap.put(CommonConstants.CNMT, cnmtSqlSessionFactoryBean);
 		sqlSessionFactoryMap.put(CommonConstants.CTDM, ctdmSqlSessionFactoryBean);
+		sqlSessionFactoryMap.put(CommonConstants.DM, dmSqlSessionFactoryBean);
 		sqlSessionFactoryMap.put(CommonConstants.TH, thSqlSessionFactoryBean);
 		sqlSessionFactoryMap.put(CommonConstants.HA, haSqlSessionFactoryBean);
 		sqlSessionFactoryMap.put(CommonConstants.HN, hnSqlSessionFactoryBean);

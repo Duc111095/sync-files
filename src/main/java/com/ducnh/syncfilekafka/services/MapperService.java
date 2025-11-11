@@ -11,6 +11,7 @@ import com.ducnh.syncfilekafka.exception.SyncFileException;
 import com.ducnh.syncfilekafka.repositories.mappers.DefaultMapper;
 import com.ducnh.syncfilekafka.repositories.mappers.impl.CnmtMapper;
 import com.ducnh.syncfilekafka.repositories.mappers.impl.CtdmMapper;
+import com.ducnh.syncfilekafka.repositories.mappers.impl.DmMapper;
 import com.ducnh.syncfilekafka.repositories.mappers.impl.HaMapper;
 import com.ducnh.syncfilekafka.repositories.mappers.impl.HnMapper;
 import com.ducnh.syncfilekafka.repositories.mappers.impl.LkdcMapper;
@@ -27,12 +28,13 @@ public class MapperService {
 	private Map<String, DefaultMapper> mapperMap;
 	
 	public MapperService(CnmtMapper cnmtMapper, CtdmMapper ctdmMapper, HaMapper haMapper, HnMapper hnMapper, LkdcMapper lkdcMapper,
-		MaMapper maMapper, MaTestMapper maTestMapper, NaMapper naMapper, SkMapper skMapper, NpMapper npMapper, TbMapper tbMapper, ThMapper thMapper) {
+		MaMapper maMapper, MaTestMapper maTestMapper, NaMapper naMapper, SkMapper skMapper, NpMapper npMapper, TbMapper tbMapper, ThMapper thMapper, DmMapper dmMapper) {
 		mapperMap = new HashMap<>();
 		mapperMap.put(CommonConstants.TH, thMapper);
 		mapperMap.put(CommonConstants.TB, tbMapper);
 		mapperMap.put(CommonConstants.CNMT, cnmtMapper);
 		mapperMap.put(CommonConstants.CTDM, ctdmMapper);
+		mapperMap.put(CommonConstants.DM, dmMapper);
 		mapperMap.put(CommonConstants.HA, haMapper);
 		mapperMap.put(CommonConstants.HN, hnMapper);
 		mapperMap.put(CommonConstants.LKDC, lkdcMapper);

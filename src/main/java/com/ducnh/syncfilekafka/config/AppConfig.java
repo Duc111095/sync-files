@@ -24,6 +24,7 @@ public class AppConfig {
 	private String tbPathFile;
 	private String cnmtPathFile;
 	private String ctdmPathFile;
+	private String dmPathFile;
 	private String thPathFile;
 	private String hnPathFile;
 	private String haPathFile;

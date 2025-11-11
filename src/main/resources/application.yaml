@@ -144,6 +144,18 @@ ds:
         fsUs: ${FS_US}
         fsPw: ${FS_PW}
         fsDM: ${FS_DM}
+    dm:
+        name: DMDataSource
+        jdbcUrl: jdbc:sqlserver://10.0.10.16\sql2014;database=DuyMinh_App;encrypt=True;trustServerCertificate=True;
+        username: ${MICROSOFT_DB_USERNAME}
+        password: ${MICROSOFT_DB_PASSWORD}
+        driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+        dialect: org.hibernate.dialect.SQLServer2012Dialect
+        host: "10.0.10.16"
+        connectShare: "DuyMinh"
+        fsUs: ${FS_US}
+        fsPw: ${FS_PW}
+        fsDM: ${FS_DM}
     lkdc:
         name: LKDCDataSource
         jdbcUrl: jdbc:sqlserver://192.168.60.15\sql2014;database=LKDC_App;encrypt=True;trustServerCertificate=True;
@@ -171,6 +183,7 @@ app:
         skPathFile: Upload\SKMT_App
         tbPathFile: Upload\MinhTam_App
         cnmtPathFile: Upload\MINHTAMHCM_App
+        dmPathFile: Upload\DuyMinh_App
         ctdmPathFile: Upload\DuyMinhHCM_App
         thPathFile: Upload\THANHHA_App
         hnPathFile: Upload\HAINAM_App
