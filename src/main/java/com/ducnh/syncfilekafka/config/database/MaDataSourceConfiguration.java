@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Primary;
 
 import com.ducnh.syncfilekafka.repositories.mappers.impl.CnmtMapper;
 import com.ducnh.syncfilekafka.repositories.mappers.impl.CtdmMapper;
+import com.ducnh.syncfilekafka.repositories.mappers.impl.DmMapper;
 import com.ducnh.syncfilekafka.repositories.mappers.impl.HaMapper;
 import com.ducnh.syncfilekafka.repositories.mappers.impl.HnMapper;
 import com.ducnh.syncfilekafka.repositories.mappers.impl.LkdcMapper;
@@ -208,6 +209,29 @@ public class MaDataSourceConfiguration {
 		factoryBean.setSqlSessionFactory(maSqlSessionFactoryBean.getObject());
 		return factoryBean;
 	}
+	
+	@Bean(name = DM_DATASOURCE, destroyMethod = "")
+	@ConfigurationProperties(prefix = DM_DATASOURCE_PREFIX)
+	public DataSource dataSourceDm() {
+		return DataSourceBuilder.create().build();
+	}
+	
+	@Bean(name = DM_SESSION_FACTORY, destroyMethod = "")
+	public SqlSessionFactoryBean sqlSessionFactoryDm(@Named(DM_DATASOURCE) final DataSource dataSource) throws Exception {
+		final SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
+		sqlSessionFactoryBean.setDataSource(dataSource);
+		SqlSessionFactory sqlSessionFactory = sqlSessionFactoryBean.getObject();
+		sqlSessionFactory.getConfiguration().addMapper(DmMapper.class);
+		return sqlSessionFactoryBean;
+	}
+	
+	@Bean
+	public MapperFactoryBean<CtdmMapper> etrMapperDm(@Named(DM_SESSION_FACTORY) final SqlSessionFactoryBean maSqlSessionFactoryBean) throws Exception {
+		MapperFactoryBean<CtdmMapper> factoryBean = new MapperFactoryBean<>(CtdmMapper.class);
+		factoryBean.setSqlSessionFactory(maSqlSessionFactoryBean.getObject());
+		return factoryBean;
+	}
+	
 	
 	@Bean(name = HA_DATASOURCE, destroyMethod = "")
 	@ConfigurationProperties(prefix = HA_DATASOURCE_PREFIX)

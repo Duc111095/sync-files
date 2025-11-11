@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import com.ducnh.syncfilekafka.config.database.CommonConstants;
 import com.ducnh.syncfilekafka.config.database.properties.impl.CnmtDsProperties;
 import com.ducnh.syncfilekafka.config.database.properties.impl.CtdmDsProperties;
+import com.ducnh.syncfilekafka.config.database.properties.impl.DmDsProperties;
 import com.ducnh.syncfilekafka.config.database.properties.impl.HaDsProperties;
 import com.ducnh.syncfilekafka.config.database.properties.impl.HnDsProperties;
 import com.ducnh.syncfilekafka.config.database.properties.impl.LkdcDsProperties;
@@ -47,6 +48,8 @@ public class ServerFactory {
 			return context.getBean(HaDsProperties.class);
 		case CommonConstants.TB:
 			return context.getBean(TbDsProperties.class);
+		case CommonConstants.DM:
+			return context.getBean(DmDsProperties.class);
 		case CommonConstants.CTDM:
 			return context.getBean(CtdmDsProperties.class);
 		case CommonConstants.HN: 
